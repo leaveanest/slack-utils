@@ -1,0 +1,15 @@
+{
+  "$schema": "https://slack.dev/schemas/foundation/slack.json",
+  "manifest": "manifest.ts",
+  "deployments": {
+    "production": {
+      "workspace": "{Category} workspace (update me)",
+      "token_alias": "production"
+    }
+  },
+  "environments": {
+    "local": {
+      "env_file": ".env"
+    }
+  }
+}
