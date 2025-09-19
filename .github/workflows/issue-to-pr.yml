@@ -54,7 +54,7 @@ jobs:
 
           PROMPT=$'${ISSUE_TITLE}\n\n${ISSUE_BODY}\n\n次の制約を厳守してください:\n- リポジトリルートで作業してください。\n- 自動生成された差分が空であれば何もコミットしないでください。\n- 変更内容に応じて `deno task fmt` / `deno task lint` / `deno task test` を実行してください。'
 
-          codex -a full-auto --quiet "$PROMPT"
+          codex exec --full-auto "$PROMPT"
 
           if git status --porcelain | grep -q .; then
             git add .
