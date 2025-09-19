@@ -55,13 +55,11 @@ jobs:
           KEY_SUFFIX="${OPENAI_API_KEY: -4}"
           echo "Using OPENAI_API_KEY (last 4 digits): ${KEY_SUFFIX}"
 
-          # Codex CLIにAPIキーを設定
-          codex auth --api-key "$OPENAI_API_KEY"
-
           CONSTRAINTS="次の制約を厳守してください: (1) リポジトリルートで作業してください。 (2) 自動生成された差分が空であれば何もコミットしないでください。 (3) 変更内容に応じて deno task fmt / deno task lint / deno task test を実行してください。"
           PROMPT="${ISSUE_TITLE}"$'\n\n'"${ISSUE_BODY}"$'\n\n'"${CONSTRAINTS}"
 
-          codex exec --full-auto "$PROMPT"
+          # 環境変数OPENAI_API_KEYが設定されている状態で実行（非対話モード）
+          codex --approval-mode full-auto --quiet "$PROMPT"
 
           if git status --porcelain | grep -q .; then
             git add .
