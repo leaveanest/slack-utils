@@ -55,16 +55,9 @@ jobs:
           KEY_SUFFIX="${OPENAI_API_KEY: -4}"
           echo "Using OPENAI_API_KEY (last 4 digits): ${KEY_SUFFIX}"
 
-          echo "${ISSUE_TITLE}" > /tmp/codex_prompt.txt
-          echo "" >> /tmp/codex_prompt.txt
-          echo "${ISSUE_BODY}" >> /tmp/codex_prompt.txt
-          echo "" >> /tmp/codex_prompt.txt
-          echo "次の制約を厳守してください:" >> /tmp/codex_prompt.txt
-          echo "- リポジトリルートで作業してください。" >> /tmp/codex_prompt.txt
-          echo "- 自動生成された差分が空であれば何もコミットしないでください。" >> /tmp/codex_prompt.txt
-          echo "- 変更内容に応じて \`deno task fmt\` / \`deno task lint\` / \`deno task test\` を実行してください。" >> /tmp/codex_prompt.txt
+          PROMPT=$'${ISSUE_TITLE}\n\n${ISSUE_BODY}\n\n次の制約を厳守してください:\n- リポジトリルートで作業してください。\n- 自動生成された差分が空であれば何もコミットしないでください。\n- 変更内容に応じて `deno task fmt` / `deno task lint` / `deno task test` を実行してください。'
 
-          codex -a "$(cat /tmp/codex_prompt.txt)"
+          codex exec --full-auto "$PROMPT"
 
           if git status --porcelain | grep -q .; then
             git add .
