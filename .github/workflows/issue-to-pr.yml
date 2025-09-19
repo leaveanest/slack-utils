@@ -36,6 +36,11 @@ jobs:
       - name: Install Codex CLI
         run: npm install -g @openai/codex
 
+      - name: Codex login using API key
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: codex login --api-key "$OPENAI_API_KEY"
+
       - name: Prepare workspace
         run: |
           git switch -c "$BRANCH_NAME"
