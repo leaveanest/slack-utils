@@ -55,11 +55,16 @@ jobs:
           KEY_SUFFIX="${OPENAI_API_KEY: -4}"
           echo "Using OPENAI_API_KEY (last 4 digits): ${KEY_SUFFIX}"
 
-          CONSTRAINTS="次の制約を厳守してください: (1) リポジトリルートで作業してください。 (2) 自動生成された差分が空であれば何もコミットしないでください。 (3) 変更内容に応じて deno task fmt / deno task lint / deno task test を実行してください。"
-          PROMPT="${ISSUE_TITLE}"$'\n\n'"${ISSUE_BODY}"$'\n\n'"${CONSTRAINTS}"
+          echo "${ISSUE_TITLE}" > /tmp/codex_prompt.txt
+          echo "" >> /tmp/codex_prompt.txt
+          echo "${ISSUE_BODY}" >> /tmp/codex_prompt.txt
+          echo "" >> /tmp/codex_prompt.txt
+          echo "次の制約を厳守してください:" >> /tmp/codex_prompt.txt
+          echo "- リポジトリルートで作業してください。" >> /tmp/codex_prompt.txt
+          echo "- 自動生成された差分が空であれば何もコミットしないでください。" >> /tmp/codex_prompt.txt
+          echo "- 変更内容に応じて \`deno task fmt\` / \`deno task lint\` / \`deno task test\` を実行してください。" >> /tmp/codex_prompt.txt
 
-          # 環境変数OPENAI_API_KEYが設定されている状態で実行（非対話モード）
-          codex --approval-mode full-auto --quiet "$PROMPT"
+          codex -a "$(cat /tmp/codex_prompt.txt)"
 
           if git status --porcelain | grep -q .; then
             git add .
