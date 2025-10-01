@@ -1,39 +1,39 @@
 module.exports = {
-  branches: ['main'],
-  tagFormat: '${version}',
+  branches: ["main"],
+  tagFormat: "${version}",
   plugins: [
     [
-      '@semantic-release/commit-analyzer',
+      "@semantic-release/commit-analyzer",
       {
-        preset: 'conventionalcommits',
+        preset: "conventionalcommits",
         releaseRules: [
-          { type: 'feat', release: 'minor' },
-          { type: 'fix', release: 'patch' },
-          { type: 'docs', release: 'patch' },
-          { type: 'style', release: 'patch' },
-          { type: 'refactor', release: 'patch' },
-          { type: 'test', release: 'patch' },
-          { type: 'chore', release: 'patch' }
-        ]
-      }
+          { type: "feat", release: "minor" },
+          { type: "fix", release: "patch" },
+          { type: "docs", release: "patch" },
+          { type: "style", release: "patch" },
+          { type: "refactor", release: "patch" },
+          { type: "test", release: "patch" },
+          { type: "chore", release: "patch" },
+        ],
+      },
     ],
     [
-      '@semantic-release/release-notes-generator',
+      "@semantic-release/release-notes-generator",
       {
-        preset: 'conventionalcommits',
+        preset: "conventionalcommits",
         presetConfig: {
           types: [
-            { type: 'feat', section: 'Features' },
-            { type: 'fix', section: 'Bug Fixes' },
-            { type: 'docs', section: 'Documentation' },
-            { type: 'style', section: 'Style Updates' },
-            { type: 'refactor', section: 'Refactors' },
-            { type: 'test', section: 'Tests' },
-            { type: 'chore', section: 'Chores' }
-          ]
-        }
-      }
+            { type: "feat", section: "Features" },
+            { type: "fix", section: "Bug Fixes" },
+            { type: "docs", section: "Documentation" },
+            { type: "style", section: "Style Updates" },
+            { type: "refactor", section: "Refactors" },
+            { type: "test", section: "Tests" },
+            { type: "chore", section: "Chores" },
+          ],
+        },
+      },
     ],
-    ['./scripts/semantic-release-bilingual.cjs']
-  ]
+    ["./scripts/semantic-release-bilingual.cjs"],
+  ],
 };

@@ -12,7 +12,9 @@ function printUsageAndExit(message: string): never {
 const apiKey = Deno.env.get("OPENAI_API_KEY");
 
 if (!apiKey || apiKey.trim().length === 0) {
-  printUsageAndExit("OPENAI_API_KEY が見つかりませんでした (.env を確認してください)");
+  printUsageAndExit(
+    "OPENAI_API_KEY が見つかりませんでした (.env を確認してください)",
+  );
 }
 
 // 軽量な検証: OpenAI API の models エンドポイントに HEAD/GET を投げて 200/2xx を確認
@@ -30,7 +32,9 @@ try {
   });
 
   if (res.status === 401) {
-    console.error("検証失敗: 401 Unauthorized。APIキーが誤っている可能性があります。");
+    console.error(
+      "検証失敗: 401 Unauthorized。APIキーが誤っている可能性があります。",
+    );
     Deno.exit(2);
   }
 
@@ -54,6 +58,3 @@ try {
   console.error(String(err));
   Deno.exit(4);
 }
-
-
-
