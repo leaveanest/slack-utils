@@ -29,7 +29,7 @@ function uniqueContributors(commits = []) {
 }
 
 module.exports = {
-  generateNotes: async (pluginConfig, context) => {
+  generateNotes: (_pluginConfig, context) => {
     const englishNotes =
       (context.nextRelease && context.nextRelease.notes || "").trim();
     const translatedNotes = translateHeadings(englishNotes).trim();

@@ -153,5 +153,10 @@
     "https://deno.land/x/deno_slack_sdk@2.0.0/workflows/mod.ts": "96d3a5f441bab0896af2e5324bf0f84f551325aebaba22b2a4faa7de757023d9",
     "https://deno.land/x/deno_slack_sdk@2.0.0/workflows/types.ts": "c2ce90fd410ee3810ac537f2d6c8418b6593643210d1968339c9afd1d1e8fbcb",
     "https://deno.land/x/deno_slack_sdk@2.0.0/workflows/workflow-step.ts": "130d956c3572a90fccca9d04e5e7fa1031fcd10b1fbc499d692be258feabe1ca"
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:semantic-release@23"
+    ]
   }
 }
