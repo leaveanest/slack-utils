@@ -10,6 +10,7 @@
     "test": "deno test --allow-env --allow-read",
     "check": "deno check manifest.ts workflows/example_workflow.ts",
     "dev": "slack run workflows/example_workflow",
-    "check-openai-key": "deno run --allow-env --allow-net --allow-read scripts/check_openai_key.ts"
+    "check-openai-key": "deno run --allow-env --allow-net --allow-read scripts/check_openai_key.ts",
+    "cursor-ci": "deno fmt --check && deno lint && deno check manifest.ts workflows/example_workflow.ts && deno test --allow-env --allow-read"
   }
 }
