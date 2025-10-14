@@ -14,15 +14,3 @@ updates:
     commit-message:
       prefix: "chore"
       include: "scope"
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels:
-      - "dependencies"
-      - "deno"
-    groups:
-      deno-deps:
-        patterns:
-          - "deno*"
-          - "@deno/*"
