@@ -4,6 +4,11 @@
   "compilerOptions": {
     "strict": true
   },
+  "fmt": {
+    "exclude": [
+      "CHANGELOG.md"
+    ]
+  },
   "tasks": {
     "fmt": "deno fmt",
     "lint": "deno lint",
