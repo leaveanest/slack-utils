@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/leaveanest/slack-utils/compare/v1.0.0...v1.0.1) (2025-10-17)
+
+
+### Bug Fixes
+
+* handle semantic-release default export correctly ([0a1352b](https://github.com/leaveanest/slack-utils/commit/0a1352b620757725da71c87124211c6d465f1b14))
+
 ## 1.0.0 (2025-10-17)
 
 ### Bug Fixes
