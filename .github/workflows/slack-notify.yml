@@ -59,13 +59,13 @@ jobs:
               LABEL="$(jq -r '.label.name // ""' "$GITHUB_EVENT_PATH")"
               case "$ACTION" in
                 opened)
-                  MESSAGE="🆕 新しいIssue: ${TITLE}\n${URL}"
+                  MESSAGE="🆕 新しいIssue: ${TITLE} ${URL}"
                   ;;
                 closed)
-                  MESSAGE="✅ Issue解決: ${TITLE}\n${URL}"
+                  MESSAGE="✅ Issue解決: ${TITLE} ${URL}"
                   ;;
                 labeled)
-                  MESSAGE="🏷️ ラベル追加: ${LABEL} to ${TITLE}\n${URL}"
+                  MESSAGE="🏷️ ラベル追加: ${LABEL} to ${TITLE} ${URL}"
                   ;;
               esac
               ;;
@@ -75,12 +75,12 @@ jobs:
               AUTHOR="$(jq -r '.pull_request.user.login' "$GITHUB_EVENT_PATH")"
               MERGED="$(jq -r '.pull_request.merged' "$GITHUB_EVENT_PATH")"
               if [ "$ACTION" = "opened" ]; then
-                MESSAGE="🔄 新しいPR: ${TITLE} by @${AUTHOR}\n${URL}"
+                MESSAGE="🔄 新しいPR: ${TITLE} by @${AUTHOR} ${URL}"
               elif [ "$ACTION" = "closed" ]; then
                 if [ "$MERGED" = "true" ]; then
-                  MESSAGE="🎉 マージ完了: ${TITLE}\n${URL}"
+                  MESSAGE="🎉 マージ完了: ${TITLE} ${URL}"
                 else
-                  MESSAGE="❌ PRクローズ: ${TITLE}\n${URL}"
+                  MESSAGE="❌ PRクローズ: ${TITLE} ${URL}"
                 fi
               fi
               ;;
@@ -88,7 +88,7 @@ jobs:
               TAG="$(jq -r '.release.tag_name' "$GITHUB_EVENT_PATH")"
               URL="$(jq -r '.release.html_url' "$GITHUB_EVENT_PATH")"
               if [ "$ACTION" = "published" ]; then
-                MESSAGE="🚀 新バージョンリリース: ${TAG}\n${URL}"
+                MESSAGE="🚀 新バージョンリリース: ${TAG} ${URL}"
               fi
               ;;
             workflow_run)
@@ -96,11 +96,11 @@ jobs:
               CONCLUSION="$(jq -r '.workflow_run.conclusion // ""' "$GITHUB_EVENT_PATH")"
               URL="$(jq -r '.workflow_run.html_url' "$GITHUB_EVENT_PATH")"
               if [ "$CONCLUSION" = "success" ]; then
-                MESSAGE="✅ CI完了: ${WORKFLOW}\n${URL}"
+                MESSAGE="✅ CI完了: ${WORKFLOW} ${URL}"
               elif [ "$CONCLUSION" = "failure" ] || [ "$CONCLUSION" = "timed_out" ]; then
-                MESSAGE="⚠️ CI失敗: ${WORKFLOW}\n${URL}"
+                MESSAGE="⚠️ CI失敗: ${WORKFLOW} ${URL}"
               elif [ "$CONCLUSION" = "cancelled" ]; then
-                MESSAGE="⚠️ CIキャンセル: ${WORKFLOW}\n${URL}"
+                MESSAGE="⚠️ CIキャンセル: ${WORKFLOW} ${URL}"
               fi
               ;;
           esac
