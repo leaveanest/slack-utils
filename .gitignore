@@ -6,3 +6,7 @@ node_modules/
 *.log
 coverage/
 .vscode/settings.json
+
+# Review materials (do not push)
+docs/review-prep.md
+docs/review-presentation.md
