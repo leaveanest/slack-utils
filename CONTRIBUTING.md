@@ -41,13 +41,21 @@ slack login
 
 ## テストと品質チェック
 
+**重要: git push する前に必ず以下のコマンドをローカルで実行してください。**
+
 ```bash
-deno task fmt
-deno task lint
-deno task check
-deno task test
+# 1. フォーマットチェック
+deno fmt --check
+
+# 2. リントチェック
+deno lint
+
+# 3. 全テスト実行
+deno test --allow-all
 ```
 
+- 全てのチェックがパスしてから `git commit` と `git push` を実行してください。
+- CIでのフォーマットエラーやテスト失敗を防ぐため、ローカルで事前確認が必須です。
 - 失敗した場合はログを確認し修正してから再実行してください。
 - Slack API 依存部分はモックを活用し、安定したテストを維持します。
 

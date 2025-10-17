@@ -59,6 +59,25 @@ slack login
 - macOS / Linux を想定しています。Windows の場合は WSL
   上で同様の手順を実行してください。
 
+## GitHub Secrets の設定
+
+GitHub Actionsを使用するため、以下のシークレットを設定してください：
+
+```
+Settings → Secrets and variables → Actions
+```
+
+必須のシークレット：
+
+- `SLACK_WEBHOOK` - Slack通知用のIncoming Webhook URL
+
+オプションのシークレット：
+
+- `CODECOV_TOKEN` - コードカバレッジレポート用（プライベートリポジトリの場合）
+- `OPENAI_API_KEY` - Codex CLI用（issue-to-prワークフロー使用時）
+- `NPM_TOKEN` - npm公開用（npmパッケージとして公開する場合）
+- `JSR_TOKEN` - JSR公開用（JSRパッケージとして公開する場合）
+
 ## デプロイ手順
 
 ```bash
@@ -83,8 +102,19 @@ slack-utils-template/
 ├── workflows/         # Slack Workflows
 ├── triggers/          # Slack Triggers
 ├── assets/            # アイコンなどの静的アセット
-└── .github/           # CI/CD と Issue テンプレート
+├── .github/           # CI/CD と Issue テンプレート
+├── .cursor/           # Cursor AI エディタのルール設定
+├── .gitattributes     # 改行コード統一設定 (LF)
+└── deno.jsonc         # Deno設定（CHANGELOG.md除外含む）
 ```
+
+## 開発時の注意事項
+
+- **改行コード**: 全ファイルでLF（Unix形式）に統一されています
+- **Cursor AI**: `.cursor/rules/push_rules.mdc`
+  でpush前チェックが自動実行されます
+- **CHANGELOG.md**:
+  release-pleaseが自動生成するため、フォーマットチェックから除外されています
 
 ## ライセンス
 
