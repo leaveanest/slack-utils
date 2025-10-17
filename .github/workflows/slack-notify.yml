@@ -110,7 +110,7 @@ jobs:
             exit 0
           fi
 
-          PAYLOAD=$(jq -n \
+          PAYLOAD=$(jq -nc \
             --arg channel "$CHANNEL" \
             --arg username "$USERNAME" \
             --arg icon "$ICON_EMOJI" \
@@ -118,7 +118,7 @@ jobs:
             '{channel: $channel, username: $username, icon_emoji: $icon, text: $text}')
 
           echo "send=true" >> "$GITHUB_OUTPUT"
-          echo "payload=$PAYLOAD" >> "$GITHUB_OUTPUT"
+          printf 'payload=%s\n' "$PAYLOAD" >> "$GITHUB_OUTPUT"
 
       - name: Send Slack notification
         if: steps.guard.outputs.enabled == 'true' && steps.compose.outputs.send == 'true'

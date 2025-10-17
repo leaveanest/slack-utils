@@ -1,9 +1,9 @@
-import { DefineTrigger, TriggerTypes } from "deno-slack-sdk/mod.ts";
+import { Trigger } from "deno-slack-sdk/types.ts";
 import ExampleWorkflow from "../workflows/example_workflow.ts";
 
-const ExampleTrigger = DefineTrigger({
+const ExampleTrigger: Trigger<typeof ExampleWorkflow.definition> = {
   callback_id: "example_trigger",
-  type: TriggerTypes.Shortcut,
+  type: "shortcut",
   name: "Run {Category} Lookup",
   description: "{description}",
   workflow: `#/workflows/${ExampleWorkflow.definition.callback_id}`,
@@ -12,6 +12,6 @@ const ExampleTrigger = DefineTrigger({
       value: "{{data.channel_id}}",
     },
   },
-});
+};
 
 export default ExampleTrigger;
