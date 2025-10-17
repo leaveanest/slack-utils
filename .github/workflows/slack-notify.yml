@@ -41,7 +41,7 @@ jobs:
         if: steps.guard.outputs.enabled == 'true'
         id: compose
         env:
-          CHANNEL: "#slack-utils-notifications"
+          CHANNEL: "#05-miyazawa"
           USERNAME: "slack-utils Bot"
           ICON_EMOJI: ":robot_face:"
         shell: bash
