@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/leaveanest/slack-utils/compare/v1.0.1...v1.0.2) (2025-10-17)
+
+
+### Bug Fixes
+
+* exclude CHANGELOG.md from format checking ([9b212bb](https://github.com/leaveanest/slack-utils/commit/9b212bb9a531e6ea7644e43b2caed342f84543d6))
+* remove \n from Slack notification messages ([cdb9d39](https://github.com/leaveanest/slack-utils/commit/cdb9d396feeea69ae47aa2f1448ed5e77f901f2e))
+
 ## [1.0.1](https://github.com/leaveanest/slack-utils/compare/v1.0.0...v1.0.1) (2025-10-17)
 
 
