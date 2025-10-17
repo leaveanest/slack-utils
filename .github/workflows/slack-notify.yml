@@ -122,9 +122,9 @@ jobs:
 
       - name: Send Slack notification
         if: steps.guard.outputs.enabled == 'true' && steps.compose.outputs.send == 'true'
-        uses: 8398a7/action-slack@v3
-        with:
-          status: custom
-          custom_payload: ${{ steps.compose.outputs.payload }}
+        run: |
+          curl -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d '${{ steps.compose.outputs.payload }}'
         env:
           SLACK_WEBHOOK_URL: ${{ steps.guard.outputs.webhook }}
