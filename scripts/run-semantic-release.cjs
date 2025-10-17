@@ -1,4 +1,4 @@
-const semanticRelease = require("semantic-release");
+const semanticRelease = require("semantic-release").default || require("semantic-release");
 const path = require("path");
 const process = require("node:process");
 
