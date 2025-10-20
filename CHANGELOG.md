@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/leaveanest/slack-utils/compare/v1.0.2...v1.1.0) (2025-10-20)
+
+
+### Features
+
+* upgrade Slack Deno SDK to latest versions and fix Deno 2.0 compatibility ([6954b29](https://github.com/leaveanest/slack-utils/commit/6954b2920fb647967a8b0bdcac3618010fbdfe3f))
+
 ## [1.0.2](https://github.com/leaveanest/slack-utils/compare/v1.0.1...v1.0.2) (2025-10-17)
 
 
