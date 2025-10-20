@@ -18,7 +18,7 @@ Deno.test("正常にチャンネル情報を取得できる", async () => {
             is_archived: false,
             num_members: 42,
           },
-        } as ConversationsInfoResult);
+        } as unknown as ConversationsInfoResult);
       },
     },
   } as unknown as SlackAPIClient;
@@ -39,7 +39,7 @@ Deno.test("API エラー時には例外を投げる", async () => {
         return Promise.resolve({
           ok: false,
           error: "not_in_channel",
-        } as ConversationsInfoResult);
+        } as unknown as ConversationsInfoResult);
       },
     },
   } as unknown as SlackAPIClient;

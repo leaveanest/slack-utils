@@ -22,6 +22,10 @@
 git clone https://github.com/your-org/slack-utils-template.git
 cd slack-utils-template
 
+# 環境変数の設定
+cp .env.example .env
+# .env ファイルを編集して、アプリ名やカテゴリをカスタマイズ
+
 # 依存設定と初期化
 slack login
 slack env add local
@@ -30,7 +34,32 @@ slack env add local
 bash scripts/setup-git-hooks.sh
 ```
 
-- `.env` に Slack CLI が要求するトークンや変数を設定してください。
+### 環境変数の設定
+
+`.env` ファイルで以下の変数をカスタマイズできます：
+
+```bash
+# Slack App Configuration
+SLACK_APP_NAME=Slack Utils Template        # アプリ名
+SLACK_APP_DESCRIPTION=A template...         # アプリの説明
+SLACK_CATEGORY=Channel                      # カテゴリ名（例: Team, Project など）
+```
+
+これらの変数は、ワークフロー、ファンクション、トリガーの名前や説明に自動的に反映されます。
+
+### デプロイ設定
+
+`slack.json` でデプロイ先のワークスペース名を設定してください：
+
+```json
+"deployments": {
+  "production": {
+    "workspace": "your-workspace-name",  // ← 実際のワークスペース名に変更
+    "token_alias": "production"
+  }
+}
+```
+
 - `import_map.json` で解決される依存を使用します。
 - Git hooksをセットアップすると、commit/push前に自動的にチェックが実行されます。
 

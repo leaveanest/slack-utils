@@ -5,6 +5,8 @@ node_modules/
 .DS_Store
 *.log
 coverage/
+cov/
+cov.lcov
 .vscode/settings.json
 
 # Review materials (do not push)
