@@ -25,10 +25,14 @@ cd slack-utils-template
 # 依存設定と初期化
 slack login
 slack env add local
+
+# Git hooks をセットアップ（推奨）
+bash scripts/setup-git-hooks.sh
 ```
 
 - `.env` に Slack CLI が要求するトークンや変数を設定してください。
 - `import_map.json` で解決される依存を使用します。
+- Git hooksをセットアップすると、commit/push前に自動的にチェックが実行されます。
 
 ## 使い方
 
@@ -115,6 +119,44 @@ slack-utils-template/
   でpush前チェックが自動実行されます
 - **CHANGELOG.md**:
   release-pleaseが自動生成するため、フォーマットチェックから除外されています
+
+## Git Hooks による品質チェック（推奨）
+
+Git hooksを設定すると、commit/push時に自動的に品質チェックが実行されます。
+
+### セットアップ
+
+```bash
+bash scripts/setup-git-hooks.sh
+```
+
+### 自動実行される内容
+
+**pre-commit（コミット前）:**
+
+- ✅ フォーマットチェック
+- ✅ リントチェック
+
+**pre-push（プッシュ前）:**
+
+- ✅ フォーマットチェック
+- ✅ リントチェック
+- ✅ テスト実行
+
+### メリット
+
+- CI/CDのエラーを事前に防止
+- ローカルで即座にフィードバック
+- 品質の自動保証
+
+### 緊急時のスキップ（非推奨）
+
+```bash
+git commit --no-verify  # pre-commitをスキップ
+git push --no-verify    # pre-pushをスキップ
+```
+
+詳細は `docs/git-hooks-setup.md` を参照してください。
 
 ## ライセンス
 
