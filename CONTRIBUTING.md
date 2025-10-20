@@ -34,14 +34,35 @@ curl -fsSL https://deno.land/install.sh | sh
 # Slack CLI のインストール
 curl -fsSL https://downloads.slack-edge.com/slack-cli/install.sh | bash
 slack login
+
+# Git hooks のセットアップ（推奨）
+bash scripts/setup-git-hooks.sh
 ```
 
 - `.env` に Slack CLI 用のトークンなど機密情報を保存します。
 - 必要に応じて `deno task dev` でローカル実行してください。
+- Git
+  hooksをセットアップすると、commit/push時に自動的に品質チェックが実行されます。
 
 ## テストと品質チェック
 
-**重要: git push する前に必ず以下のコマンドをローカルで実行してください。**
+### 自動チェック（推奨）
+
+Git hooksをセットアップすると、commit/push時に自動的にチェックが実行されます：
+
+```bash
+# 初回のみ実行
+bash scripts/setup-git-hooks.sh
+```
+
+**実行されるチェック：**
+
+- **pre-commit**: フォーマット + リント（コミット時）
+- **pre-push**: フォーマット + リント + テスト（プッシュ時）
+
+### 手動チェック
+
+Git hooksを使わない場合は、**push する前に必ず以下を実行してください：**
 
 ```bash
 # 1. フォーマットチェック
@@ -54,10 +75,13 @@ deno lint
 deno test --allow-all
 ```
 
+### 注意事項
+
 - 全てのチェックがパスしてから `git commit` と `git push` を実行してください。
 - CIでのフォーマットエラーやテスト失敗を防ぐため、ローカルで事前確認が必須です。
 - 失敗した場合はログを確認し修正してから再実行してください。
 - Slack API 依存部分はモックを活用し、安定したテストを維持します。
+- 緊急時のみ `git push --no-verify` でフックをスキップ可能（非推奨）
 
 ## コミットメッセージ規約
 
