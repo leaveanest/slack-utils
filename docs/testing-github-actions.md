@@ -1,6 +1,7 @@
 # GitHub Actions ワークフローの動作確認方法
 
-このドキュメントでは、各GitHub Actionsワークフローをテスト・確認する方法を説明します。
+このドキュメントでは、各GitHub
+Actionsワークフローをテスト・確認する方法を説明します。
 
 ---
 
@@ -23,6 +24,7 @@
 4. 実行履歴とステータスを確認
 
 **ステータス表示:**
+
 - ✅ 緑チェック: 成功
 - ❌ 赤バツ: 失敗
 - 🟡 黄色丸: 実行中
@@ -152,6 +154,7 @@ git push origin test/security-secret
 ```
 
 **テスト後は必ずブランチを削除:**
+
 ```bash
 git push origin --delete test/security-secret
 ```
@@ -171,7 +174,8 @@ git push origin --delete test/security-secret
 
 **トリガー:** push (main)
 
-**注意: このワークフローは実際のリリースを作成するため、慎重にテストしてください**
+**注意:
+このワークフローは実際のリリースを作成するため、慎重にテストしてください**
 
 #### テスト方法A: リリース可能なコミットをpush
 
@@ -287,7 +291,7 @@ git push origin test/slack-notification
 
 1. **手動実行でテスト:**
    - Actions タブ → Welcome → Run workflow
-   
+
 2. **別のGitHubアカウントで確認:**
    - 友人に協力を依頼してIssueまたはPRを作成してもらう
 
@@ -379,12 +383,12 @@ git push origin test/pr-size-xl
 #### サイズ区分
 
 | ラベル | 変更行数 |
-|--------|----------|
-| XS | 0-9 |
-| S | 10-49 |
-| M | 50-249 |
-| L | 250-999 |
-| XL | 1000+ |
+| ------ | -------- |
+| XS     | 0-9      |
+| S      | 10-49    |
+| M      | 50-249   |
+| L      | 250-999  |
+| XL     | 1000+    |
 
 #### 確認ポイント
 
@@ -400,7 +404,8 @@ git push origin test/pr-size-xl
 
 ### act を使ったローカル実行
 
-[act](https://github.com/nektos/act) を使うと、ローカルでGitHub Actionsを実行できます。
+[act](https://github.com/nektos/act) を使うと、ローカルでGitHub
+Actionsを実行できます。
 
 #### actのインストール
 
@@ -498,7 +503,8 @@ act issues --eventpath event.json
 
 **確認事項:**
 
-1. ✅ `CODECOV_TOKEN` シークレットが設定されているか（プライベートリポジトリの場合）
+1. ✅ `CODECOV_TOKEN`
+   シークレットが設定されているか（プライベートリポジトリの場合）
 2. ✅ カバレッジファイル（`cov.lcov`）が生成されているか
 3. ✅ Linuxジョブでのみアップロードされているか
 
@@ -550,6 +556,7 @@ gh run view <run-id> --log
 6. **Release** - リリースフロー（最後に実行）
 
 **将来実装予定（テスト不要）:**
+
 - Issue Automation
 - Issue to PR
 
@@ -562,4 +569,3 @@ gh run view <run-id> --log
 ---
 
 **ワークフローの動作確認を通じて、CI/CDパイプラインの健全性を保ちましょう！** 🚀
-
