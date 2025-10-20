@@ -11,9 +11,9 @@
 | `.github/workflows/security.yml`         | Security Scan            | `push`(main), `pull_request`, `schedule`(毎週月曜)  | TruffleHog と Trivy による秘密情報・脆弱性スキャン                  |
 | `.github/workflows/slack-notify.yml`     | Slack Notifications      | `issues`, `pull_request`, `release`, `workflow_run` | Issue/PR/Release/CI 完了時に Slack へ通知                           |
 | `.github/workflows/pr-size.yml`          | PR Size Check            | `pull_request`                                      | 変更行数に応じた PR ラベル付与                                      |
-| `.github/workflows/issue-automation.yml` | Issue Automation         | `issues`(labeled)                                   | `ready-for-development` ラベル付与時にコメント・ラベル整備          |
+| `.github/workflows/issue-automation.yml` | Issue Automation         | `issues`(labeled)                                   | ラベル付与時にコメント・ラベル整備（※将来実装予定）              |
 | `.github/workflows/welcome.yml`          | Welcome New Contributors | `issues`(opened), `pull_request_target`(opened)     | 初回投稿者への歓迎メッセージ送信                                    |
-| `.github/workflows/issue-to-pr.yml`      | Issue to PR with Codex   | `issues`(labeled)                                   | `codex-ready` ラベル付与で Codex CLI による自動修正 PR を生成       |
+| `.github/workflows/issue-to-pr.yml`      | Issue to PR with Codex   | `issues`(labeled)                                   | `codex-ready` ラベル付与で自動修正 PR を生成（※将来的に実装予定）  |
 
 ## 各ワークフローの詳細
 
@@ -61,9 +61,12 @@
 
 ### Issue Automation (`.github/workflows/issue-automation.yml`)
 
+**※ 注意: この機能は将来的な実装予定です。現時点ではワークフローの準備のみ完了しています。**
+
 - Issue に `ready-for-development` ラベルが付いたタイミングで `backlog`
-  ラベルを付与し、開始準備完了を通知するコメントを残します。
-- `actions/github-script` を用いて GitHub API を直接操作します。
+  ラベルを付与し、開始準備完了を通知するコメントを残す計画です。
+- `actions/github-script` を用いて GitHub API を直接操作する予定です。
+- 実際の運用フローが確立した段階で有効化します。
 
 ### Welcome New Contributors (`.github/workflows/welcome.yml`)
 
@@ -73,6 +76,9 @@
 
 ### Issue to PR with Codex (`.github/workflows/issue-to-pr.yml`)
 
-- Issue に `codex-ready` ラベルが付くと専用ブランチを作成し、OpenAI Codex CLI
-  を使って修正案を生成します。
-- 変更が存在する場合はコミット・プッシュ・PR 作成まで自動化します。
+**※ 注意: この機能は将来的な実装予定です。GitHub Actionsからの操作が可能になり次第、有効化します。**
+
+- Issue に `codex-ready` ラベルが付くと専用ブランチを作成し、OpenAI Codex
+  を使って修正案を生成する計画です。
+- Codex 自体は実用的ですが、GitHub Actions から直接操作できるようになった段階で有効化予定です。
+- 現在はワークフローファイルのみ準備されており、GitHub Actions連携の実現を待っている状態です。
