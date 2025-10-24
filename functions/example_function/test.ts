@@ -33,26 +33,31 @@ Deno.test("正常にチャンネル情報を取得できる", async () => {
   });
 });
 
-Deno.test("API エラー時には例外を投げる", async () => {
-  const mockClient = {
-    conversations: {
-      info(_args: ConversationsInfoArgs): Promise<ConversationsInfoResult> {
-        return Promise.resolve({
-          ok: false,
-          error: "not_in_channel",
-        } as unknown as ConversationsInfoResult);
+Deno.test({
+  name: "API エラー時には例外を投げる",
+  sanitizeResources: false, // i18n auto-init causes resource tracking issues
+  sanitizeOps: false,
+  fn: async () => {
+    const mockClient = {
+      conversations: {
+        info(_args: ConversationsInfoArgs): Promise<ConversationsInfoResult> {
+          return Promise.resolve({
+            ok: false,
+            error: "not_in_channel",
+          } as unknown as ConversationsInfoResult);
+        },
       },
-    },
-  } as unknown as SlackAPIClient;
+    } as unknown as SlackAPIClient;
 
-  // Wait a bit for i18n to initialize
-  await new Promise((resolve) => setTimeout(resolve, 100));
+    // Wait a bit for i18n to initialize
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
-  const error = await assertRejects(
-    () => retrieveChannelSummary(mockClient, "C00000"),
-    Error,
-  );
+    const error = await assertRejects(
+      () => retrieveChannelSummary(mockClient, "C00000"),
+      Error,
+    );
 
-  // Check that error message contains the error code
-  assertEquals(error.message.includes("not_in_channel"), true);
+    // Check that error message contains the error code
+    assertEquals(error.message.includes("not_in_channel"), true);
+  },
 });
