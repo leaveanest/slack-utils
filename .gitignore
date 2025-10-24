@@ -7,7 +7,6 @@ node_modules/
 coverage/
 cov/
 cov.lcov
-.vscode/settings.json
 
 # Review materials (do not push)
 docs/review-prep.md

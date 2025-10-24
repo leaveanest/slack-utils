@@ -288,16 +288,34 @@ git --version
 
 #### Deno拡張機能の設定（VSCode/Cursor）
 
-1. Deno拡張機能をインストール
-2. ワークスペース設定で Deno を有効化：
+このプロジェクトには `.vscode/`
+ディレクトリが用意されており、以下の設定が自動的に適用されます：
 
-```json
-{
-  "deno.enable": true,
-  "deno.lint": true,
-  "deno.unstable": false
-}
-```
+**含まれる設定ファイル：**
+
+- `settings.json` - Deno LSP、エディタ、フォーマッター設定
+- `extensions.json` - 推奨拡張機能のリスト
+- `tasks.json` - Denoタスクのショートカット
+- `launch.json` - デバッグ設定（Slack Function、テスト、翻訳スクリプト等）
+
+**推奨拡張機能（自動でインストール推奨されます）：**
+
+- `denoland.vscode-deno` - Deno公式拡張（必須）
+- `github.copilot` - AI支援コーディング
+- `eamodio.gitlens` - Git履歴可視化
+- `usernamehw.errorlens` - エラー行内表示
+
+初回起動時に「推奨拡張機能をインストールしますか？」と表示されたら、「すべてインストール」を選択してください。
+
+**デバッグ機能：**
+
+`F5` キーまたは「実行とデバッグ」パネルから、以下のデバッグ設定を使用できます：
+
+- **Debug Slack Function** - Slack関数のデバッグ
+- **Debug Deno Tests** - 全テストのデバッグ
+- **Debug Current File** - 現在開いているファイルのデバッグ
+- **Debug i18n Tests** - i18nテストのデバッグ
+- **Debug Translation Script** - 翻訳スクリプトのデバッグ
 
 ## GitHub Secrets の設定
 
