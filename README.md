@@ -176,6 +176,52 @@ Actionsが自動的に日本語への翻訳を実行し、PRを作成します�
 
 詳細は [`docs/i18n-guide.md`](docs/i18n-guide.md) を参照してください。
 
+## 例外処理
+
+このプロジェクトでは、統一的な例外処理パターンを採用しています。
+
+### 基本ルール
+
+1. **API通信**: 必ず`response.ok`をチェック
+2. **バリデーション**: 入力値の型チェック・空文字チェック必須
+3. **エラーメッセージ**: 必ず`t()`関数で多言語化
+4. **Slack関数**: try-catchで全体をラップ
+
+### コード例
+
+```typescript
+import { t } from "../../lib/i18n/mod.ts";
+
+// API通信の例外処理
+const response = await client.conversations.info({ channel: channelId });
+if (!response.ok) {
+  throw new Error(t("errors.api_call_failed", { error: response.error }));
+}
+
+// バリデーション
+if (typeof input !== "string") {
+  throw new Error(t("errors.invalid_type", {
+    expected: "string",
+    actual: typeof input,
+  }));
+}
+
+// Slack関数
+export default SlackFunction(MyFunction, async ({ inputs, client }) => {
+  try {
+    // 処理
+    return { outputs: { result } };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error("Function error:", message);
+    return { error: message };
+  }
+});
+```
+
+詳細は [`docs/exception-handling-guide.md`](docs/exception-handling-guide.md)
+を参照してください。
+
 ## 開発環境のセットアップ
 
 ### Deno のインストール

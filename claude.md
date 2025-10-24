@@ -157,11 +157,11 @@ functions/example_function/
 ````typescript
 /**
  * 関数の説明（日本語で明確に）
- * 
+ *
  * @param paramName - パラメータの説明
  * @returns 戻り値の説明
  * @throws {Error} エラーが発生する条件
- * 
+ *
  * @example
  * ```typescript
  * const result = await functionName(client, "value");
@@ -402,6 +402,162 @@ deno task cursor-ci
 1. **環境変数**: 機密情報は`.env`で管理
 2. **入力検証**: 全てのユーザー入力を検証
 3. **パーミッション**: 必要最小限の`--allow-*`フラグを使用
+
+## 🚨 例外処理ルール
+
+**重要**: API通信とバリデーションでは、必ず適切な例外処理を実装してください。
+
+### API通信の例外処理
+
+Slack
+API呼び出しでは、必ず`response.ok`をチェックしてからデータにアクセスします。
+
+**✅ 正しい例：**
+
+```typescript
+/**
+ * Slack API呼び出しの例外処理
+ */
+async function callSlackAPI(client: SlackAPIClient, channelId: string) {
+  const response = await client.conversations.info({ channel: channelId });
+
+  // ✅ 必須: response.okをチェック
+  if (!response.ok) {
+    // ✅ 必須: エラーメッセージをi18n化
+    const errorCode = response.error ?? "unknown_error";
+    throw new Error(t("errors.api_call_failed", { error: errorCode }));
+  }
+
+  // ✅ 必須: データの存在チェック
+  if (!response.channel) {
+    throw new Error(t("errors.data_not_found"));
+  }
+
+  return response.channel;
+}
+```
+
+**理由：**
+
+- `response.ok`をチェックしないと、undefinedデータにアクセスしてしまう
+- エラーメッセージは必ずi18n化（多言語対応）
+- フォールバック値を提供（`??` 演算子使用）
+
+### バリデーションの例外処理
+
+入力値は必ず型チェックとフォーマット検証を行います。
+
+**✅ 正しい例：**
+
+```typescript
+/**
+ * 入力値のバリデーション
+ */
+function validateInput(input: unknown): string {
+  // ✅ 必須: 型ガードを使用
+  if (typeof input !== "string") {
+    throw new Error(t("errors.invalid_type", {
+      expected: "string",
+      actual: typeof input,
+    }));
+  }
+
+  // ✅ 必須: 空文字チェック
+  if (input.trim().length === 0) {
+    throw new Error(t("errors.empty_value"));
+  }
+
+  // ✅ 推奨: フォーマットチェック（必要に応じて）
+  if (!/^[A-Z0-9]+$/.test(input)) {
+    throw new Error(t("errors.invalid_format", {
+      field: "channel_id",
+      pattern: "uppercase alphanumeric",
+    }));
+  }
+
+  return input;
+}
+```
+
+### Slack関数のエラーハンドリング
+
+Slack関数全体をtry-catchでラップし、エラーを適切に処理します。
+
+**✅ 正しい例：**
+
+```typescript
+export default SlackFunction(
+  MyFunctionDefinition,
+  async ({ inputs, client }) => {
+    try {
+      // ✅ 必須: 入力値のバリデーション
+      const validatedInput = validateInput(inputs.channel_id);
+
+      // ✅ 必須: API呼び出し
+      const result = await callSlackAPI(client, validatedInput);
+
+      // ✅ 必須: 成功時はoutputsを返す
+      return { outputs: { result } };
+    } catch (error) {
+      // ✅ 必須: エラーメッセージの型安全な取得
+      const message = error instanceof Error ? error.message : String(error);
+
+      // ✅ 必須: エラーをログ出力（デバッグ用）
+      console.error("Function error:", message);
+
+      // ✅ 必須: errorプロパティで返す
+      return { error: message };
+    }
+  },
+);
+```
+
+### 禁止事項
+
+**❌ やってはいけないこと：**
+
+```typescript
+// ❌ 文字列を直接throw
+throw "Something went wrong";
+
+// ❌ response.okをチェックせずにデータアクセス
+const channel = response.channel.name; // response.okがfalseの場合、undefinedエラー
+
+// ❌ エラーメッセージをハードコード
+throw new Error("Channel not found");
+
+// ❌ エラーを無視
+try {
+  await client.api.call();
+} catch (error) {
+  // 何もしない - これは危険！
+}
+
+// ❌ 汎用的すぎるエラー
+throw new Error("Error");
+```
+
+### エラーメッセージのi18n化
+
+全てのエラーメッセージは`locales/en.json`に定義し、`t()`関数で取得します：
+
+```json
+{
+  "errors": {
+    "api_call_failed": "API call failed: {error}",
+    "data_not_found": "Required data not found",
+    "invalid_type": "Invalid type: expected {expected}, got {actual}",
+    "empty_value": "Value cannot be empty",
+    "invalid_format": "Invalid format for {field}: expected {pattern}"
+  }
+}
+```
+
+使用例：
+
+```typescript
+throw new Error(t("errors.api_call_failed", { error: errorCode }));
+```
 
 ## 🤖 AI開発時の推奨フロー
 

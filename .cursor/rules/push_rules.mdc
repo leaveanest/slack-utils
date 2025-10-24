@@ -14,7 +14,7 @@ alwaysApply: true
 # 1. フォーマットチェック
 deno fmt --check
 
-# 2. リントチェック  
+# 2. リントチェック
 deno lint
 
 # 3. 全テスト実行
@@ -56,7 +56,7 @@ CIでのフォーマットエラーやテスト失敗を防ぐため、ローカ
    ```typescript
    /**
     * Slackチャンネルの情報を取得します
-    * 
+    *
     * @param client - Slack APIクライアント
     * @param channelId - 取得対象のチャンネルID
     * @returns チャンネルの概要情報
@@ -106,7 +106,7 @@ CIでのフォーマットエラーやテスト失敗を防ぐため、ローカ
    ```typescript
    // ❌ 悪い例
    throw new Error("Failed to load channel info");
-   
+
    // ✅ 良い例
    import { t } from "../../lib/i18n/mod.ts";
    throw new Error(t("errors.channel_not_found", { error }));
@@ -172,4 +172,34 @@ deno test --allow-all lib/i18n/test.ts
 ### 参考ドキュメント
 
 詳細は [`docs/i18n-guide.md`](docs/i18n-guide.md) を参照してください。
+
+## 例外処理ルール
+
+**重要: API通信とバリデーションでは、必ず適切な例外処理を実装してください。**
+
+### 必須事項
+
+1. **Slack API呼び出しは必ず `response.ok` をチェック**
+   - データアクセス前に必ず確認
+   - エラー時は `response.error` を使用
+   - エラーメッセージは i18n化
+
+2. **入力値は必ずバリデーション**
+   - 型チェック（型ガード使用）
+   - 空文字・null・undefinedチェック
+   - フォーマット検証（必要に応じて）
+
+3. **エラーは必ず `Error` オブジェクトでthrow**
+   - 文字列の直接throwは禁止
+   - エラーメッセージは i18n化必須
+   - プレースホルダーで詳細情報を含める
+
+4. **Slack関数は try-catch でラップ**
+   - エラー時は `{ error: message }` を返す
+   - エラーログを出力（デバッグ用）
+   - エラーメッセージは型安全に取得
+
+### 参考例
+
+詳細は [`CLAUDE.md`](../../CLAUDE.md) の「🚨 例外処理ルール」セクションを参照してください。
 
