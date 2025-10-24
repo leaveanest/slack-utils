@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/leaveanest/slack-utils/compare/v1.2.0...v1.3.0) (2025-10-24)
+
+
+### Features
+
+* enhance VSCode settings with comprehensive development environment ([14487e9](https://github.com/leaveanest/slack-utils/commit/14487e9e20a0dc6498d7913cfe8c26ac68760da1))
+
+
+### Bug Fixes
+
+* add settings.json to version control for team consistency ([bc9d563](https://github.com/leaveanest/slack-utils/commit/bc9d563c539412a3c4bc61c8c201301d1c682512))
+* downgrade first-interaction action from v3 to v1 ([9e331ed](https://github.com/leaveanest/slack-utils/commit/9e331edbf0a943f631ebb4c46757332ee2cbb73a))
+
 ## [1.2.0](https://github.com/leaveanest/slack-utils/compare/v1.1.0...v1.2.0) (2025-10-24)
 
 
