@@ -7,30 +7,35 @@ type ConversationsInfo = SlackAPIClient["conversations"]["info"];
 type ConversationsInfoArgs = Parameters<ConversationsInfo>[0];
 type ConversationsInfoResult = Awaited<ReturnType<ConversationsInfo>>;
 
-Deno.test("正常にチャンネル情報を取得できる", async () => {
-  const mockClient = {
-    conversations: {
-      info(_args: ConversationsInfoArgs): Promise<ConversationsInfoResult> {
-        return Promise.resolve({
-          ok: true,
-          channel: {
-            id: "C12345",
-            name: "general",
-            is_archived: false,
-            num_members: 42,
-          },
-        } as unknown as ConversationsInfoResult);
+Deno.test({
+  name: "正常にチャンネル情報を取得できる",
+  sanitizeResources: false, // i18n auto-init causes resource tracking issues
+  sanitizeOps: false,
+  fn: async () => {
+    const mockClient = {
+      conversations: {
+        info(_args: ConversationsInfoArgs): Promise<ConversationsInfoResult> {
+          return Promise.resolve({
+            ok: true,
+            channel: {
+              id: "C12345",
+              name: "general",
+              is_archived: false,
+              num_members: 42,
+            },
+          } as unknown as ConversationsInfoResult);
+        },
       },
-    },
-  } as unknown as SlackAPIClient;
+    } as unknown as SlackAPIClient;
 
-  const summary = await retrieveChannelSummary(mockClient, "C12345");
-  assertEquals(summary, {
-    id: "C12345",
-    name: "general",
-    is_archived: false,
-    member_count: 42,
-  });
+    const summary = await retrieveChannelSummary(mockClient, "C12345");
+    assertEquals(summary, {
+      id: "C12345",
+      name: "general",
+      is_archived: false,
+      member_count: 42,
+    });
+  },
 });
 
 Deno.test({
