@@ -1,6 +1,7 @@
 import { assertEquals, assertRejects } from "std/testing/asserts.ts";
 import type { SlackAPIClient } from "deno-slack-sdk/types.ts";
 import { retrieveChannelSummary } from "./mod.ts";
+// i18n is auto-initialized when imported
 
 type ConversationsInfo = SlackAPIClient["conversations"]["info"];
 type ConversationsInfoArgs = Parameters<ConversationsInfo>[0];
@@ -44,9 +45,14 @@ Deno.test("API エラー時には例外を投げる", async () => {
     },
   } as unknown as SlackAPIClient;
 
-  await assertRejects(
+  // Wait a bit for i18n to initialize
+  await new Promise((resolve) => setTimeout(resolve, 100));
+
+  const error = await assertRejects(
     () => retrieveChannelSummary(mockClient, "C00000"),
     Error,
-    "Failed to load channel info: not_in_channel",
   );
+
+  // Check that error message contains the error code
+  assertEquals(error.message.includes("not_in_channel"), true);
 });

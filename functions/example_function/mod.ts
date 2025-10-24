@@ -1,5 +1,6 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
 import type { SlackAPIClient } from "deno-slack-sdk/types.ts";
+import { t } from "../../lib/i18n/mod.ts";
 
 // Load category from environment variable
 const CATEGORY = Deno.env.get("SLACK_CATEGORY") || "Channel";
@@ -81,8 +82,8 @@ export async function retrieveChannelSummary(
   });
 
   if (!response.ok || response.channel === undefined) {
-    const error = response.error ?? "unknown_error";
-    throw new Error(`Failed to load channel info: ${error}`);
+    const error = response.error ?? t("errors.unknown_error");
+    throw new Error(t("errors.channel_not_found", { error }));
   }
 
   const channel = response.channel as {

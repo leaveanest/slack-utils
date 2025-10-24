@@ -93,3 +93,83 @@ CIでのフォーマットエラーやテスト失敗を防ぐため、ローカ
 - `mod.ts`: JSDocコメント付きの関数実装
 - `test.ts`: 正常系・異常系のテストケース
 
+## I18n（多言語対応）ルール
+
+**重要: エラーメッセージやユーザー向けメッセージを記述する際は、必ず以下を実施してください。**
+
+### 必須事項
+
+1. **直接文字列を使わず `t()` 関数を使用**
+   - ハードコードされた文字列は避ける
+   - 全てのユーザー向けメッセージは翻訳可能にする
+
+   ```typescript
+   // ❌ 悪い例
+   throw new Error("Failed to load channel info");
+   
+   // ✅ 良い例
+   import { t } from "../../lib/i18n/mod.ts";
+   throw new Error(t("errors.channel_not_found", { error }));
+   ```
+
+2. **英語をベース言語として `locales/en.json` に追加**
+   - 新しいメッセージは必ず `locales/en.json` に追加
+   - 適切なカテゴリ（`errors`, `messages`, `logs`）に配置
+   - プレースホルダーは `{変数名}` の形式で記述
+
+   ```json
+   {
+     "errors": {
+       "user_not_found": "User not found: {userId}"
+     }
+   }
+   ```
+
+3. **自動翻訳ワークフローが日本語を生成**
+   - `locales/en.json` をコミット・プッシュすると自動的に翻訳
+   - GitHub Actionsが `locales/ja.json` を更新してPRを作成
+   - 手動翻訳も可能だが、自動翻訳を推奨
+
+### 対象範囲
+
+以下のメッセージは必ずi18n化してください：
+
+- ✅ エラーメッセージ（`throw new Error()`）
+- ✅ ログメッセージ（`console.log()`, `console.error()`）
+- ✅ ユーザー向けメッセージ（Slack応答など）
+- ✅ 関数の戻り値に含まれるメッセージ
+
+以下は対象外（そのまま記述OK）：
+
+- ❌ コメント（コード内のコメントは日本語可）
+- ❌ 変数名、関数名
+- ❌ デバッグ用の一時的な出力
+
+### プレースホルダーの使用
+
+動的な値はプレースホルダーを使用：
+
+```typescript
+// ✅ 良い例
+t("messages.channel_summary", { name: channel.name, count: memberCount })
+
+// ❌ 悪い例
+`Channel: ${channel.name}, Members: ${memberCount}`
+```
+
+### 整合性チェック
+
+コミット前に必ず実行：
+
+```bash
+# i18n整合性チェック
+deno run --allow-read lib/i18n/check.ts
+
+# i18nテスト
+deno test --allow-all lib/i18n/test.ts
+```
+
+### 参考ドキュメント
+
+詳細は [`docs/i18n-guide.md`](docs/i18n-guide.md) を参照してください。
+
