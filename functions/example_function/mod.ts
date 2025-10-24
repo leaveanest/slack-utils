@@ -41,13 +41,37 @@ export const ExampleFunctionDefinition = DefineFunction({
   },
 });
 
+/**
+ * チャンネルの概要情報
+ */
 export interface ChannelSummary {
+  /** チャンネルID */
   id: string;
+  /** チャンネル名 */
   name: string;
+  /** アーカイブされているかどうか */
   is_archived: boolean;
+  /** メンバー数 */
   member_count: number;
 }
 
+/**
+ * Slackチャンネルの情報を取得します
+ *
+ * 指定されたチャンネルIDから、チャンネルの詳細情報（ID、名前、アーカイブ状態、メンバー数）を取得し、
+ * 簡潔なサマリー形式で返します。
+ *
+ * @param client - Slack APIクライアント
+ * @param channelId - 取得対象のチャンネルID（例: "C12345678"）
+ * @returns チャンネルの概要情報
+ * @throws {Error} チャンネル情報の取得に失敗した場合、またはチャンネルが存在しない場合
+ *
+ * @example
+ * ```typescript
+ * const summary = await retrieveChannelSummary(client, "C12345678");
+ * console.log(`チャンネル名: ${summary.name}, メンバー数: ${summary.member_count}`);
+ * ```
+ */
 export async function retrieveChannelSummary(
   client: SlackAPIClient,
   channelId: string,

@@ -72,6 +72,10 @@ deno task lint
 deno task check
 deno task test
 
+# カバレッジ付きテスト
+deno test --allow-all --coverage=cov
+deno coverage cov --html
+
 # ローカル実行
 slack run workflows/example_workflow
 ```
@@ -81,6 +85,50 @@ slack run workflows/example_workflow
 - `workflows/example_workflow.ts` は上記関数を利用して {Category} を分析します。
 - `triggers/example_trigger.ts` を Slack CLI
   で登録し、ショートカットからワークフローを呼び出せます。
+
+## テスト
+
+### テストの実行
+
+```bash
+# 全テストを実行
+deno task test
+
+# カバレッジを測定
+deno test --allow-all --coverage=cov
+deno coverage cov --html  # HTML形式で確認
+```
+
+### 新規関数作成時の要件
+
+新しい関数を作成する際は、以下を必ず実施してください：
+
+1. **JSDocコメント**: 関数の説明、パラメータ、戻り値、エラーを記載
+2. **テストファイル**: 正常系と異常系のテストを作成
+3. **テストカバレッジ**: 主要な処理パスをカバー
+
+詳細は [`docs/testing-guide.md`](docs/testing-guide.md) を参照してください。
+
+### テストの例
+
+```typescript
+/**
+ * Slackチャンネルの情報を取得します
+ *
+ * @param client - Slack APIクライアント
+ * @param channelId - 取得対象のチャンネルID
+ * @returns チャンネルの概要情報
+ * @throws {Error} チャンネル情報の取得に失敗した場合
+ */
+export async function retrieveChannelSummary(
+  client: SlackAPIClient,
+  channelId: string,
+): Promise<ChannelSummary> {
+  // 実装
+}
+```
+
+参考実装: [`functions/example_function/`](functions/example_function/)
 
 ## Slack CLI のインストール
 
@@ -131,9 +179,10 @@ slack deploy --env production
 
 ```
 slack-utils-template/
-├── functions/         # Slack Functions
+├── functions/         # Slack Functions（各関数にtest.tsを配置）
 ├── workflows/         # Slack Workflows
 ├── triggers/          # Slack Triggers
+├── docs/              # ドキュメント（テストガイド等）
 ├── assets/            # アイコンなどの静的アセット
 ├── .github/           # CI/CD と Issue テンプレート
 ├── .cursor/           # Cursor AI エディタのルール設定

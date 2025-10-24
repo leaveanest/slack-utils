@@ -41,3 +41,55 @@ CIでのフォーマットエラーやテスト失敗を防ぐため、ローカ
 - 改行コードはLF（Unix形式）に統一されています
 - Slackチャンネル名は `#05-miyazawa` です
 
+## 新規関数作成時のルール
+
+**重要: 新しい関数やモジュールを作成する際は、必ず以下を実施してください。**
+
+### 必須事項
+
+1. **関数にJSDocコメントを追加**
+   - 関数の目的と動作を説明する
+   - パラメータの説明を `@param` で記載
+   - 戻り値の説明を `@returns` で記載
+   - エラーの場合は `@throws` で記載
+
+   ```typescript
+   /**
+    * Slackチャンネルの情報を取得します
+    * 
+    * @param client - Slack APIクライアント
+    * @param channelId - 取得対象のチャンネルID
+    * @returns チャンネルの概要情報
+    * @throws {Error} チャンネル情報の取得に失敗した場合
+    */
+   export async function retrieveChannelSummary(
+     client: SlackAPIClient,
+     channelId: string,
+   ): Promise<ChannelSummary> {
+     // ...
+   }
+   ```
+
+2. **テストファイルを作成**
+   - 関数と同じディレクトリに `test.ts` を配置
+   - 正常系と異常系の両方をテスト
+   - テスト名は日本語で明確に記述（例: "正常にチャンネル情報を取得できる"）
+   - モックを使用して外部依存を排除
+
+3. **テストカバレッジ**
+   - 主要な処理パスをカバーする
+   - エッジケースやエラーハンドリングもテスト
+   - 最低限、正常系1つ・異常系1つを含める
+
+### テストファイルの命名規則
+
+- 関数ファイル: `mod.ts` または `{function_name}.ts`
+- テストファイル: `test.ts` または `{function_name}_test.ts`
+- テストファイルは関数ファイルと同じディレクトリに配置
+
+### 参考例
+
+`functions/example_function/` を参照してください：
+- `mod.ts`: JSDocコメント付きの関数実装
+- `test.ts`: 正常系・異常系のテストケース
+
