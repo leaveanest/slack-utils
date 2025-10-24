@@ -11,9 +11,12 @@
 
 ## 前提条件
 
-- Deno 1.37+ がインストールされていること
-- Slack CLI が利用可能で、ワークスペースにログイン済みであること
-- Slack App を作成できる権限を持っていること
+- **Deno 1.37+** がインストールされていること
+- **Slack CLI** が利用可能で、ワークスペースにログイン済みであること
+- **Slack App** を作成できる権限を持っていること
+- **Git** がインストールされていること（Git Hooks使用時）
+
+詳細は [開発環境のセットアップ](#開発環境のセットアップ) を参照してください。
 
 ## セットアップ
 
@@ -31,7 +34,8 @@ slack login
 slack env add local
 
 # Git hooks をセットアップ（推奨）
-bash scripts/setup-git-hooks.sh
+# macOS/Linux: bash scripts/setup-git-hooks.sh
+# Windows: Git Bash または WSL で実行
 ```
 
 ### 環境変数の設定
@@ -130,15 +134,128 @@ export async function retrieveChannelSummary(
 
 参考実装: [`functions/example_function/`](functions/example_function/)
 
-## Slack CLI のインストール
+## 開発環境のセットアップ
+
+### Deno のインストール
+
+#### macOS / Linux
+
+```bash
+# インストールスクリプトを使用
+curl -fsSL https://deno.land/install.sh | sh
+
+# Homebrewを使用（macOS）
+brew install deno
+```
+
+#### Windows
+
+```powershell
+# PowerShellでインストール
+irm https://deno.land/install.ps1 | iex
+
+# Chocolateyを使用
+choco install deno
+
+# Scoopを使用
+scoop install deno
+```
+
+#### 動作確認
+
+```bash
+deno --version
+```
+
+### Slack CLI のインストール
+
+#### macOS / Linux
 
 ```bash
 curl -fsSL https://downloads.slack-edge.com/slack-cli/install.sh | bash
 slack login
 ```
 
-- macOS / Linux を想定しています。Windows の場合は WSL
-  上で同様の手順を実行してください。
+#### Windows
+
+**方法1: インストーラーを使用（推奨）**
+
+1. [Slack CLI リリースページ](https://api.slack.com/automation/cli/install)
+   から最新のインストーラーをダウンロード
+2. ダウンロードした `.msi` ファイルを実行
+3. PowerShellまたはコマンドプロンプトで `slack login` を実行
+
+**方法2: WSL (Windows Subsystem for Linux) を使用**
+
+```bash
+# WSL内で実行
+curl -fsSL https://downloads.slack-edge.com/slack-cli/install.sh | bash
+slack login
+```
+
+#### 動作確認
+
+```bash
+slack version
+slack login
+```
+
+### Git のインストール
+
+#### macOS
+
+```bash
+# Xcodeコマンドラインツールと一緒にインストール
+xcode-select --install
+
+# Homebrewを使用
+brew install git
+```
+
+#### Linux
+
+```bash
+# Ubuntu/Debian
+sudo apt-get update
+sudo apt-get install git
+
+# CentOS/RHEL
+sudo yum install git
+
+# Fedora
+sudo dnf install git
+```
+
+#### Windows
+
+1. [Git for Windows](https://git-scm.com/download/win)
+   から公式インストーラーをダウンロード
+2. インストール時に「Git Bash」を含めることを推奨（スクリプト実行に必要）
+3. インストール完了後、Git Bashまたは PowerShellで動作確認
+
+```bash
+git --version
+```
+
+### 推奨エディタ
+
+- **[Visual Studio Code](https://code.visualstudio.com/)** -
+  公式Deno拡張機能が利用可能
+- **[Cursor](https://cursor.sh/)** - AI統合エディタ（このプロジェクトでは
+  `.cursor/rules/` でルールを設定済み）
+
+#### Deno拡張機能の設定（VSCode/Cursor）
+
+1. Deno拡張機能をインストール
+2. ワークスペース設定で Deno を有効化：
+
+```json
+{
+  "deno.enable": true,
+  "deno.lint": true,
+  "deno.unstable": false
+}
+```
 
 ## GitHub Secrets の設定
 
@@ -192,17 +309,68 @@ slack-utils-template/
 
 ## 開発時の注意事項
 
-- **改行コード**: 全ファイルでLF（Unix形式）に統一されています
+### 改行コード
+
+- **全ファイルでLF（Unix形式）に統一されています**
+- `.gitattributes` で自動的に設定されます
+- Windows環境では Git が自動変換するため、特別な設定は不要です
+
+### エディタ設定
+
 - **Cursor AI**: `.cursor/rules/push_rules.mdc`
   でpush前チェックが自動実行されます
-- **CHANGELOG.md**:
-  release-pleaseが自動生成するため、フォーマットチェックから除外されています
+- **Deno**: `deno.jsonc` で設定を管理（フォーマッター、リンターなど）
+- **VSCode/Cursor**: Deno拡張機能を有効化してください
+
+### 自動生成ファイル
+
+- **CHANGELOG.md**: release-please/semantic-release
+  が自動生成するため、フォーマットチェックから除外されています
+- 手動で編集しないでください（自動更新されます）
+
+### OS固有の注意点
+
+#### Windows
+
+- **Git Bash の使用**: スクリプト実行時は Git Bash または WSL を使用
+- **改行コード**: `.gitattributes` が自動的にLFに変換します
+- **パス区切り**: スラッシュ（`/`）を使用（バックスラッシュ不要）
+
+#### macOS
+
+- **Xcode Command Line Tools**: Gitインストールに必要
+- **Homebrew**: 各種ツールのインストールに推奨
+
+#### Linux
+
+- **権限**: スクリプト実行時に `chmod +x` が必要な場合があります
+- **パッケージマネージャー**: ディストリビューションに応じて選択
 
 ## Git Hooks による品質チェック（推奨）
 
 Git hooksを設定すると、commit/push時に自動的に品質チェックが実行されます。
 
 ### セットアップ
+
+#### macOS / Linux
+
+```bash
+bash scripts/setup-git-hooks.sh
+```
+
+#### Windows
+
+**PowerShellを使用:**
+
+```powershell
+# Git Bashがインストールされている場合
+bash scripts/setup-git-hooks.sh
+
+# または、WSL内で実行
+wsl bash scripts/setup-git-hooks.sh
+```
+
+**Git Bashを使用:**
 
 ```bash
 bash scripts/setup-git-hooks.sh
