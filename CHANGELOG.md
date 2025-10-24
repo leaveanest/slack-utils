@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/leaveanest/slack-utils/compare/v1.1.0...v1.2.0) (2025-10-24)
+
+
+### Features
+
+* **i18n:** implement multi-language support and automatic translation ([16f1c8c](https://github.com/leaveanest/slack-utils/commit/16f1c8c7f0d74951c3afac7069709530c375065d))
+
+
+### Bug Fixes
+
+* **ci:** update i18n workflows to use Deno v2.x ([4463e30](https://github.com/leaveanest/slack-utils/commit/4463e302aa27e80c5577c4e800e2d8d0d16c4853))
+* **i18n:** disable sanitizers for i18n tests ([fcc300a](https://github.com/leaveanest/slack-utils/commit/fcc300a6dd5e81403401d686305c564dfcc34cd8))
+* **i18n:** use import_map for test imports ([f51ba73](https://github.com/leaveanest/slack-utils/commit/f51ba733f5f15c32b2667f8a44370e833c40da20))
+* **test:** disable sanitizers for all i18n-related tests ([cd621e0](https://github.com/leaveanest/slack-utils/commit/cd621e0bc540c6ffef998ed8b9dfab4924176042))
+
 ## [1.1.0](https://github.com/leaveanest/slack-utils/compare/v1.0.2...v1.1.0) (2025-10-20)
 
 
