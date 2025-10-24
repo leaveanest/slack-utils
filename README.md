@@ -51,21 +51,43 @@ SLACK_CATEGORY=Channel                      # カテゴリ名（例: Team, Proje
 
 これらの変数は、ワークフロー、ファンクション、トリガーの名前や説明に自動的に反映されます。
 
-### デプロイ設定
+### slack.json 設定
 
-`slack.json` でデプロイ先のワークスペース名を設定してください：
+`slack.json` には以下の設定が含まれています：
+
+#### 環境変数の管理
+
+```json
+"environments": {
+  "local": {
+    "env_file": ".env"
+  }
+}
+```
+
+- **`environments.local`**: `slack run`実行時に`.env`ファイルを自動読み込み
+- 環境変数（API キーなど）を`.env`で管理できます
+
+#### 本番デプロイ設定（オプション）
+
+本番環境へデプロイする場合は、`deployments`セクションを追加してください：
 
 ```json
 "deployments": {
   "production": {
-    "workspace": "your-workspace-name",  // ← 実際のワークスペース名に変更
+    "workspace": "your-workspace-name",
     "token_alias": "production"
   }
 }
 ```
 
-- `import_map.json` で解決される依存を使用します。
-- Git hooksをセットアップすると、commit/push前に自動的にチェックが実行されます。
+その後、`slack deploy --env production`でデプロイできます。
+
+#### 補足
+
+- **`.slack/`フォルダー**: Slack CLI が自動生成・管理（手動編集不要）
+- **`import_map.json`**: 依存関係の解決に使用
+- **Git hooks**: セットアップすると commit/push 前に自動チェック実行
 
 ## 使い方
 
@@ -384,19 +406,45 @@ Settings → Secrets and variables → Actions
 
 ## デプロイ手順
 
+### ローカル開発
+
 ```bash
-# テストと型チェックを完了させる
+# ローカルで実行（開発環境）
+slack run workflows/example_workflow
+
+# .envファイルは自動的に読み込まれます
+```
+
+### 本番環境へのデプロイ
+
+本番環境へデプロイする場合は、以下の手順を実行してください：
+
+```bash
+# 1. slack.jsonにdeploymentsセクションを追加
+# slack.jsonに以下を追加：
+# "deployments": {
+#   "production": {
+#     "workspace": "your-workspace-name",
+#     "token_alias": "production"
+#   }
+# }
+
+# 2. テストと型チェックを完了させる
 deno task test
 deno task check
 
-# Slack CLI でデプロイ
+# 3. Slack CLI でデプロイ
 slack deploy --env production
+
+# 4. トリガーを有効化
+slack triggers create --trigger-file triggers/example_trigger.ts
 ```
 
-- `slack.json` の設定を環境に合わせて更新してください。
-- デプロイ後は
-  `slack triggers create --trigger-file triggers/example_trigger.ts`
-  でトリガーを有効化します。
+**注意:**
+
+- `deployments`セクションはデフォルトでは含まれていません（開発専用テンプレートのため）
+- 本番デプロイ時に必要に応じて追加してください
+- 詳細は「slack.json 設定」セクションを参照
 
 ## プロジェクト構成
 
