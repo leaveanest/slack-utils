@@ -13,6 +13,20 @@
 - TypeScript は常に `strict` モードを前提とし、暗黙的な `any` を避けます。
 - import は `import_map.json` を利用し、相対パスの氾濫を避けます。
 
+### 重要なガイドライン
+
+新しい機能を開発する際は、以下のガイドラインに従ってください：
+
+- **テスト**: [`docs/testing-guide.md`](docs/testing-guide.md) -
+  JSDocコメント必須、正常系・異常系テスト
+- **多言語化**: [`docs/i18n-guide.md`](docs/i18n-guide.md) -
+  エラーメッセージの`t()`関数化
+- **例外処理**:
+  [`docs/exception-handling-guide.md`](docs/exception-handling-guide.md)
+  - API通信時の`response.ok`チェック
+  - バリデーション必須
+  - 型安全なエラーハンドリング
+
 ## Issue の書き方
 
 - テンプレートに従い、背景・目的・受け入れ条件を明文化します。
