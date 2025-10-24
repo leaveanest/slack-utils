@@ -4,12 +4,6 @@
   "hooks": {
     "get-hooks": "deno run -q --allow-read --allow-net https://deno.land/x/deno_slack_hooks@1.4.0/mod.ts"
   },
-  "deployments": {
-    "production": {
-      "workspace": "{Category} workspace (update me)",
-      "token_alias": "production"
-    }
-  },
   "environments": {
     "local": {
       "env_file": ".env"

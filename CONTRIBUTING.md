@@ -58,6 +58,22 @@ bash scripts/setup-git-hooks.sh
 - Git
   hooksをセットアップすると、commit/push時に自動的に品質チェックが実行されます。
 
+### slack.json について
+
+`slack.json`はローカル開発用の最小構成になっています：
+
+- **`environments.local`**: `.env`ファイルを自動読み込み（ローカル開発に便利）
+- **`deployments`**: 削除済み（本番デプロイ時に各チームが追加）
+
+本番デプロイが必要な場合は、`deployments`セクションを追加してください。
+詳細は[README.md](README.md)の「slack.json 設定」セクションを参照してください。
+
+**`.slack/`フォルダーについて:**
+
+- Slack CLIが自動生成・管理（`.gitignore`で除外済み）
+- 手動編集不要
+- `slack run`や`slack auth`で自動更新
+
 ## テストと品質チェック
 
 ### 自動チェック（推奨）
