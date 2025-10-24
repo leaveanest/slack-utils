@@ -14,7 +14,7 @@ alwaysApply: true
 # 1. フォーマットチェック
 deno fmt --check
 
-# 2. リントチェック  
+# 2. リントチェック
 deno lint
 
 # 3. 全テスト実行
@@ -56,7 +56,7 @@ CIでのフォーマットエラーやテスト失敗を防ぐため、ローカ
    ```typescript
    /**
     * Slackチャンネルの情報を取得します
-    * 
+    *
     * @param client - Slack APIクライアント
     * @param channelId - 取得対象のチャンネルID
     * @returns チャンネルの概要情報
@@ -106,7 +106,7 @@ CIでのフォーマットエラーやテスト失敗を防ぐため、ローカ
    ```typescript
    // ❌ 悪い例
    throw new Error("Failed to load channel info");
-   
+
    // ✅ 良い例
    import { t } from "../../lib/i18n/mod.ts";
    throw new Error(t("errors.channel_not_found", { error }));
