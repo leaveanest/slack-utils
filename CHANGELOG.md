@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/leaveanest/slack-utils/compare/v1.3.0...v1.4.0) (2025-10-24)
+
+
+### Features
+
+* add exception handling rules for API and validation ([602898c](https://github.com/leaveanest/slack-utils/commit/602898c4d59d847b0ffc0f2a7ac4f66ee3c510cb))
+
 ## [1.3.0](https://github.com/leaveanest/slack-utils/compare/v1.2.0...v1.3.0) (2025-10-24)
 
 
