@@ -1,0 +1,19 @@
+{
+  "errors": {
+    "channel_not_found": "Failed to load channel info: {error}",
+    "unknown_error": "An unexpected error occurred",
+    "invalid_input": "Invalid input provided",
+    "api_error": "API request failed: {message}"
+  },
+  "messages": {
+    "channel_summary": "Channel: {name}, Members: {count}",
+    "success": "Operation completed successfully",
+    "processing": "Processing request..."
+  },
+  "logs": {
+    "starting": "Starting workflow...",
+    "completed": "Workflow completed",
+    "loading_channel": "Loading channel information...",
+    "channel_loaded": "Channel {name} loaded successfully"
+  }
+}

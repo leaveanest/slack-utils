@@ -134,6 +134,48 @@ export async function retrieveChannelSummary(
 
 参考実装: [`functions/example_function/`](functions/example_function/)
 
+## 多言語対応（I18n）
+
+このプロジェクトは、英語と日本語の多言語対応をサポートしています。
+
+### サポート言語
+
+- **English (en)** - ベース言語
+- **日本語 (ja)** - 自動翻訳
+
+### 言語の切り替え
+
+環境変数で言語を指定できます：
+
+```bash
+# 英語で実行（デフォルト）
+export LOCALE=en
+deno run your_script.ts
+
+# 日本語で実行
+export LOCALE=ja
+deno run your_script.ts
+```
+
+### コード内での使用
+
+```typescript
+import { t } from "../../lib/i18n/mod.ts";
+
+// シンプルなメッセージ
+const message = t("errors.unknown_error");
+
+// プレースホルダー付きメッセージ
+const error = t("errors.channel_not_found", { error: "not_found" });
+```
+
+### 自動翻訳
+
+`locales/en.json` が更新されると、GitHub
+Actionsが自動的に日本語への翻訳を実行し、PRを作成します。
+
+詳細は [`docs/i18n-guide.md`](docs/i18n-guide.md) を参照してください。
+
 ## 開発環境のセットアップ
 
 ### Deno のインストール

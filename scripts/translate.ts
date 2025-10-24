@@ -1,0 +1,208 @@
+/**
+ * Automatic translation script using OpenAI API
+ *
+ * This script translates English locale files to Japanese using GPT-4.
+ * It preserves placeholders (e.g., {name}) and JSON structure.
+ *
+ * Usage:
+ *   deno run --allow-env --allow-read --allow-write --allow-net scripts/translate.ts
+ */
+
+interface TranslationRequest {
+  model: string;
+  messages: Array<{
+    role: string;
+    content: string;
+  }>;
+  temperature: number;
+}
+
+interface TranslationResponse {
+  choices: Array<{
+    message: {
+      content: string;
+    };
+  }>;
+}
+
+/**
+ * Call OpenAI API to translate text
+ *
+ * @param text - Text to translate
+ * @param apiKey - OpenAI API key
+ * @returns Translated text
+ */
+async function translateWithOpenAI(
+  text: string,
+  apiKey: string,
+): Promise<string> {
+  const systemPrompt =
+    `You are a professional translator. Translate the following English text to Japanese.
+  
+IMPORTANT RULES:
+1. Preserve all placeholders in curly braces (e.g., {name}, {error}, {count}) EXACTLY as they are
+2. Keep the same JSON structure
+3. Translate only the text content, not keys or placeholders
+4. Maintain technical terms when appropriate
+5. Use natural Japanese that fits the context (error messages, logs, etc.)
+
+Return ONLY the translated JSON, without any explanation or markdown formatting.`;
+
+  const request: TranslationRequest = {
+    model: "gpt-4",
+    messages: [
+      { role: "system", content: systemPrompt },
+      {
+        role: "user",
+        content: `Translate this JSON to Japanese:\n\n${text}`,
+      },
+    ],
+    temperature: 0.3, // Lower temperature for more consistent translations
+  };
+
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(request),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`OpenAI API error: ${response.status} - ${error}`);
+  }
+
+  const data: TranslationResponse = await response.json();
+  const translatedText = data.choices[0]?.message?.content;
+
+  if (!translatedText) {
+    throw new Error("No translation returned from OpenAI API");
+  }
+
+  // Remove markdown code blocks if present
+  return translatedText
+    .replace(/```json\n?/g, "")
+    .replace(/```\n?/g, "")
+    .trim();
+}
+
+/**
+ * Main translation function
+ */
+async function main() {
+  console.log("🌍 Starting automatic translation...\n");
+
+  // Check for OpenAI API key
+  const apiKey = Deno.env.get("OPENAI_API_KEY");
+  if (!apiKey) {
+    console.error("❌ Error: OPENAI_API_KEY environment variable is not set");
+    console.error(
+      "   Please set it in your .env file or environment variables",
+    );
+    Deno.exit(1);
+  }
+
+  // Read English locale file
+  const enPath = new URL("../locales/en.json", import.meta.url);
+  const jaPath = new URL("../locales/ja.json", import.meta.url);
+
+  console.log("📖 Reading English locale file...");
+  let enContent: string;
+  try {
+    enContent = await Deno.readTextFile(enPath);
+  } catch (error) {
+    console.error(`❌ Failed to read ${enPath}:`, error);
+    Deno.exit(1);
+  }
+
+  // Validate JSON
+  let enData: Record<string, unknown>;
+  try {
+    enData = JSON.parse(enContent);
+  } catch (error) {
+    console.error("❌ Invalid JSON in English locale file:", error);
+    Deno.exit(1);
+  }
+
+  console.log("✅ English locale loaded\n");
+
+  // Check if Japanese locale exists
+  try {
+    const existingJaContent = await Deno.readTextFile(jaPath);
+    JSON.parse(existingJaContent);
+    console.log("📝 Existing Japanese locale found");
+  } catch {
+    console.log("📝 No existing Japanese locale found, creating new one");
+  }
+
+  // Translate using OpenAI API
+  console.log("🤖 Translating with OpenAI API (GPT-4)...");
+  console.log("   This may take a moment...\n");
+
+  let translatedContent: string;
+  try {
+    translatedContent = await translateWithOpenAI(
+      JSON.stringify(enData, null, 2),
+      apiKey,
+    );
+  } catch (error) {
+    console.error("❌ Translation failed:", error);
+    Deno.exit(1);
+  }
+
+  // Validate translated JSON
+  let jaData: Record<string, unknown>;
+  try {
+    jaData = JSON.parse(translatedContent);
+  } catch (error) {
+    console.error("❌ Invalid JSON returned from translation:", error);
+    console.error("Raw response:", translatedContent);
+    Deno.exit(1);
+  }
+
+  // Write Japanese locale file
+  console.log("💾 Writing Japanese locale file...");
+  try {
+    await Deno.writeTextFile(
+      jaPath,
+      JSON.stringify(jaData, null, 2) + "\n",
+    );
+  } catch (error) {
+    console.error(`❌ Failed to write ${jaPath}:`, error);
+    Deno.exit(1);
+  }
+
+  console.log("✅ Japanese locale file updated successfully!\n");
+
+  // Show summary
+  console.log("📊 Translation Summary:");
+  console.log(`   Source: locales/en.json`);
+  console.log(`   Target: locales/ja.json`);
+  console.log(`   Keys translated: ${countKeys(jaData)}`);
+  console.log("\n🎉 Translation complete!");
+}
+
+/**
+ * Count total number of keys in nested object
+ */
+function countKeys(obj: Record<string, unknown>): number {
+  let count = 0;
+  for (const value of Object.values(obj)) {
+    if (typeof value === "object" && value !== null) {
+      count += countKeys(value as Record<string, unknown>);
+    } else {
+      count++;
+    }
+  }
+  return count;
+}
+
+// Run the script
+if (import.meta.main) {
+  main().catch((error) => {
+    console.error("❌ Unexpected error:", error);
+    Deno.exit(1);
+  });
+}

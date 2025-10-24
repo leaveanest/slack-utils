@@ -1,0 +1,19 @@
+{
+  "errors": {
+    "channel_not_found": "チャンネル情報の読み込みに失敗しました: {error}",
+    "unknown_error": "予期しないエラーが発生しました",
+    "invalid_input": "無効な入力が提供されました",
+    "api_error": "APIリクエストが失敗しました: {message}"
+  },
+  "messages": {
+    "channel_summary": "チャンネル: {name}, メンバー数: {count}",
+    "success": "操作が正常に完了しました",
+    "processing": "リクエストを処理中..."
+  },
+  "logs": {
+    "starting": "ワークフローを開始しています...",
+    "completed": "ワークフローが完了しました",
+    "loading_channel": "チャンネル情報を読み込んでいます...",
+    "channel_loaded": "チャンネル {name} を正常に読み込みました"
+  }
+}
