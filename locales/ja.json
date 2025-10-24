@@ -3,22 +3,22 @@
     "channel_not_found": "チャンネル情報の読み込みに失敗しました: {error}",
     "unknown_error": "予期しないエラーが発生しました",
     "invalid_input": "無効な入力が提供されました",
-    "api_error": "APIリクエストが失敗しました: {message}",
-    "api_call_failed": "API呼び出しが失敗しました: {error}",
+    "api_error": "APIリクエストに失敗しました: {message}",
+    "api_call_failed": "API呼び出しに失敗しました: {error}",
     "data_not_found": "必要なデータが見つかりません",
-    "invalid_type": "無効な型: {expected}が必要ですが、{actual}が指定されました",
-    "empty_value": "値を空にすることはできません",
-    "invalid_format": "{field}の形式が無効です: {pattern}が必要です"
+    "invalid_type": "無効なタイプ: 期待値 {expected}、実際の値 {actual}",
+    "empty_value": "値は空にできません",
+    "invalid_format": "{field}の無効な形式: 期待値 {pattern}"
   },
   "messages": {
     "channel_summary": "チャンネル: {name}、メンバー数: {count}",
-    "success": "操作は正常に完了しました",
+    "success": "操作が正常に完了しました",
     "processing": "リクエストを処理中..."
   },
   "logs": {
     "starting": "ワークフローを開始します...",
     "completed": "ワークフローが完了しました",
     "loading_channel": "チャンネル情報を読み込み中...",
-    "channel_loaded": "チャンネル{name}の読み込みが正常に完了しました"
+    "channel_loaded": "チャンネル{name}が正常に読み込まれました"
   }
 }
