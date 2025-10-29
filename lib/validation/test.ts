@@ -215,3 +215,47 @@ Deno.test({
     setLocale(originalLocale); // 元に戻す
   },
 });
+
+Deno.test({
+  name: "デフォルトスキーマ: ロケール変更に動的に対応する",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: () => {
+    // 英語でバリデーション（デフォルトスキーマ使用）
+    setLocale("en");
+    const result1 = channelIdSchema.safeParse("invalid");
+    assertEquals(result1.success, false);
+    if (!result1.success) {
+      assertEquals(
+        result1.error.errors[0].message,
+        "Channel ID must start with 'C' followed by uppercase alphanumeric characters",
+      );
+    }
+
+    // 同じスキーマインスタンスで日本語に切り替え
+    setLocale("ja");
+    const result2 = channelIdSchema.safeParse("invalid");
+    assertEquals(result2.success, false);
+    if (!result2.success) {
+      // 日本語のエラーメッセージが表示される
+      assertEquals(
+        result2.error.errors[0].message.includes("チャンネルID"),
+        true,
+      );
+    }
+
+    // 英語に戻す
+    setLocale("en");
+    const result3 = channelIdSchema.safeParse("invalid");
+    assertEquals(result3.success, false);
+    if (!result3.success) {
+      // 再び英語のエラーメッセージが表示される
+      assertEquals(
+        result3.error.errors[0].message,
+        "Channel ID must start with 'C' followed by uppercase alphanumeric characters",
+      );
+    }
+
+    setLocale(originalLocale); // 元に戻す
+  },
+});

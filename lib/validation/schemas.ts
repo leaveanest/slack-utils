@@ -13,6 +13,9 @@ await initI18n();
  * i18n対応のSlackチャンネル ID スキーマを生成
  * 形式: C + 英数字大文字
  *
+ * エラーメッセージは検証時に動的に評価されるため、
+ * ロケール変更に対応します。
+ *
  * @returns Zodスキーマ
  *
  * @example
@@ -22,17 +25,33 @@ await initI18n();
  * ```
  */
 export function createChannelIdSchema() {
-  return z.string()
-    .min(1, t("errors.validation.channel_id_empty"))
-    .regex(
-      /^C[A-Z0-9]+$/,
-      t("errors.validation.channel_id_format"),
-    );
+  return z.string().superRefine((val, ctx) => {
+    if (val.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.too_small,
+        minimum: 1,
+        type: "string",
+        inclusive: true,
+        message: t("errors.validation.channel_id_empty"),
+      });
+      return;
+    }
+    if (!/^C[A-Z0-9]+$/.test(val)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.invalid_string,
+        validation: "regex",
+        message: t("errors.validation.channel_id_format"),
+      });
+    }
+  });
 }
 
 /**
  * i18n対応のSlack ユーザー ID スキーマを生成
  * 形式: U または W + 英数字大文字
+ *
+ * エラーメッセージは検証時に動的に評価されるため、
+ * ロケール変更に対応します。
  *
  * @returns Zodスキーマ
  *
@@ -43,16 +62,32 @@ export function createChannelIdSchema() {
  * ```
  */
 export function createUserIdSchema() {
-  return z.string()
-    .min(1, t("errors.validation.user_id_empty"))
-    .regex(
-      /^[UW][A-Z0-9]+$/,
-      t("errors.validation.user_id_format"),
-    );
+  return z.string().superRefine((val, ctx) => {
+    if (val.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.too_small,
+        minimum: 1,
+        type: "string",
+        inclusive: true,
+        message: t("errors.validation.user_id_empty"),
+      });
+      return;
+    }
+    if (!/^[UW][A-Z0-9]+$/.test(val)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.invalid_string,
+        validation: "regex",
+        message: t("errors.validation.user_id_format"),
+      });
+    }
+  });
 }
 
 /**
  * i18n対応の空でない文字列スキーマを生成
+ *
+ * エラーメッセージは検証時に動的に評価されるため、
+ * ロケール変更に対応します。
  *
  * @returns Zodスキーマ
  *
@@ -63,12 +98,24 @@ export function createUserIdSchema() {
  * ```
  */
 export function createNonEmptyStringSchema() {
-  return z.string().min(1, t("errors.validation.value_empty"));
+  return z.string().superRefine((val, ctx) => {
+    if (val.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.too_small,
+        minimum: 1,
+        type: "string",
+        inclusive: true,
+        message: t("errors.validation.value_empty"),
+      });
+    }
+  });
 }
 
 /**
  * Slackチャンネル ID スキーマ（デフォルトインスタンス）
- * 後方互換性のため、モジュール読み込み時のロケールでインスタンス化されます
+ *
+ * エラーメッセージは検証時に動的に評価されるため、
+ * ロケール変更に自動的に対応します。
  *
  * @example
  * ```typescript
@@ -79,7 +126,9 @@ export const channelIdSchema = createChannelIdSchema();
 
 /**
  * Slack ユーザー ID スキーマ（デフォルトインスタンス）
- * 後方互換性のため、モジュール読み込み時のロケールでインスタンス化されます
+ *
+ * エラーメッセージは検証時に動的に評価されるため、
+ * ロケール変更に自動的に対応します。
  *
  * @example
  * ```typescript
@@ -90,7 +139,9 @@ export const userIdSchema = createUserIdSchema();
 
 /**
  * 空でない文字列スキーマ（デフォルトインスタンス）
- * 後方互換性のため、モジュール読み込み時のロケールでインスタンス化されます
+ *
+ * エラーメッセージは検証時に動的に評価されるため、
+ * ロケール変更に自動的に対応します。
  *
  * @example
  * ```typescript
