@@ -2,6 +2,7 @@ import { assertEquals } from "std/testing/asserts.ts";
 import {
   getLocale,
   initI18n,
+  loadLocale,
   setLocale,
   SUPPORTED_LOCALES,
 } from "../i18n/mod.ts";
@@ -16,6 +17,11 @@ import {
 
 // i18n初期化
 await initI18n();
+
+// テストで使用する全てのロケールを事前に読み込む
+await loadLocale("en");
+await loadLocale("ja");
+
 const originalLocale = getLocale() as typeof SUPPORTED_LOCALES[number];
 
 Deno.test("channelIdSchema: 正常なチャンネルIDを検証", () => {
