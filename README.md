@@ -272,6 +272,29 @@ if (!result.success) {
 }
 ```
 
+### エラーメッセージの多言語化
+
+Zodのバリデーションエラーメッセージは自動的に多言語化されます：
+
+```typescript
+import { createChannelIdSchema } from "../../lib/validation/schemas.ts";
+import { setLocale } from "../../lib/i18n/mod.ts";
+
+// 英語でエラーメッセージを取得
+setLocale("en");
+const schema1 = createChannelIdSchema();
+const result1 = schema1.safeParse("invalid");
+// エラー: "Channel ID must start with 'C' followed by uppercase alphanumeric characters"
+
+// 日本語でエラーメッセージを取得
+setLocale("ja");
+const schema2 = createChannelIdSchema();
+const result2 = schema2.safeParse("invalid");
+// エラー: "チャンネルIDは'C'で始まり、その後に大文字の英数字が続く必要があります"
+```
+
+環境変数 `LOCALE` または `LANG` で言語を切り替えられます。
+
 詳細は [`CONTRIBUTING.md`](CONTRIBUTING.md)
 の「バリデーション（Zod）」セクションを参照してください。
 

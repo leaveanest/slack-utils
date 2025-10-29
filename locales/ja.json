@@ -8,7 +8,14 @@
     "data_not_found": "必要なデータが見つかりません",
     "invalid_type": "無効なタイプ: 期待値 {expected}、実際の値 {actual}",
     "empty_value": "値は空にできません",
-    "invalid_format": "{field}の無効な形式: 期待値 {pattern}"
+    "invalid_format": "{field}の無効な形式: 期待値 {pattern}",
+    "validation": {
+      "channel_id_empty": "チャンネルIDを空にすることはできません",
+      "channel_id_format": "チャンネルIDは'C'で始まり、その後に大文字の英数字が続く必要があります",
+      "user_id_empty": "ユーザーIDを空にすることはできません",
+      "user_id_format": "ユーザーIDは'U'または'W'で始まり、その後に大文字の英数字が続く必要があります",
+      "value_empty": "値を空にすることはできません"
+    }
   },
   "messages": {
     "channel_summary": "チャンネル: {name}、メンバー数: {count}",
