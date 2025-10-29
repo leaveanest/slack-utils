@@ -74,6 +74,115 @@ bash scripts/setup-git-hooks.sh
 - 手動編集不要
 - `slack run`や`slack auth`で自動更新
 
+## 新規関数作成時のルール
+
+**重要: 新しい関数やモジュールを作成する際は、必ず以下を実施してください。**
+
+### 必須事項
+
+#### 1. JSDocコメントの追加
+
+全ての公開関数には、必ずJSDocコメントを追加してください：
+
+````typescript
+/**
+ * Slackチャンネルの情報を取得します
+ *
+ * @param client - Slack APIクライアント
+ * @param channelId - 取得対象のチャンネルID
+ * @returns チャンネルの概要情報
+ * @throws {Error} チャンネル情報の取得に失敗した場合
+ *
+ * @example
+ * ```typescript
+ * const summary = await retrieveChannelSummary(client, "C12345678");
+ * console.log(`チャンネル名: ${summary.name}, メンバー数: ${summary.member_count}`);
+ * ```
+ */
+export async function retrieveChannelSummary(
+  client: SlackAPIClient,
+  channelId: string,
+): Promise<ChannelSummary> {
+  // 実装
+}
+````
+
+**含めるべき情報：**
+
+- 関数の目的と動作の説明
+- `@param` - 各パラメータの説明
+- `@returns` - 戻り値の説明
+- `@throws` - エラーが発生する条件
+- `@example` - 使用例（任意、推奨）
+
+#### 2. テストファイルの作成
+
+関数と同じディレクトリに `test.ts`
+を配置し、正常系と異常系の両方をテストします：
+
+```typescript
+import { assertEquals, assertRejects } from "std/testing/asserts.ts";
+import { retrieveChannelSummary } from "./mod.ts";
+
+Deno.test("正常にチャンネル情報を取得できる", async () => {
+  // Arrange: 準備
+  const mockClient = createMockClient();
+
+  // Act: 実行
+  const result = await retrieveChannelSummary(mockClient, "C12345");
+
+  // Assert: 検証
+  assertEquals(result.id, "C12345");
+  assertEquals(result.name, "general");
+});
+
+Deno.test("チャンネルIDが無効な場合はエラーを返す", async () => {
+  const mockClient = createErrorClient();
+
+  await assertRejects(
+    () => retrieveChannelSummary(mockClient, "invalid"),
+    Error,
+    "Expected error message",
+  );
+});
+```
+
+**テストの要件：**
+
+- テスト名は日本語で明確に（例: "正常にチャンネル情報を取得できる"）
+- モックを使用して外部依存を排除
+- Arrange-Act-Assert パターンを使用
+- 正常系と異常系の両方をカバー
+
+#### 3. テストカバレッジ
+
+以下を必ずカバーしてください：
+
+- ✅ 主要な処理パス
+- ✅ エラーハンドリング
+- ✅ エッジケース（空文字、null、undefined など）
+- ✅ 最低限、正常系1つ・異常系1つを含める
+
+### ファイル構成
+
+```
+functions/example_function/
+├── mod.ts          # 関数実装（JSDoc付き）
+└── test.ts         # テスト（正常系・異常系）
+```
+
+### 参考例
+
+`functions/example_function/`
+に実装例があります。新規関数を作成する際は、このディレクトリを参考にしてください。
+
+### 詳細ドキュメント
+
+- テスト詳細: [`docs/testing-guide.md`](docs/testing-guide.md)
+- 多言語化: [`docs/i18n-guide.md`](docs/i18n-guide.md)
+- 例外処理:
+  [`docs/exception-handling-guide.md`](docs/exception-handling-guide.md)
+
 ## テストと品質チェック
 
 ### 自動チェック（推奨）
