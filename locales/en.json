@@ -8,7 +8,14 @@
     "data_not_found": "Required data not found",
     "invalid_type": "Invalid type: expected {expected}, got {actual}",
     "empty_value": "Value cannot be empty",
-    "invalid_format": "Invalid format for {field}: expected {pattern}"
+    "invalid_format": "Invalid format for {field}: expected {pattern}",
+    "validation": {
+      "channel_id_empty": "Channel ID cannot be empty",
+      "channel_id_format": "Channel ID must start with 'C' followed by uppercase alphanumeric characters",
+      "user_id_empty": "User ID cannot be empty",
+      "user_id_format": "User ID must start with 'U' or 'W' followed by uppercase alphanumeric characters",
+      "value_empty": "Value cannot be empty"
+    }
   },
   "messages": {
     "channel_summary": "Channel: {name}, Members: {count}",

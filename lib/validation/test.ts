@@ -1,9 +1,22 @@
 import { assertEquals } from "std/testing/asserts.ts";
 import {
   channelIdSchema,
+  createChannelIdSchema,
+  createNonEmptyStringSchema,
+  createUserIdSchema,
   nonEmptyStringSchema,
   userIdSchema,
 } from "./schemas.ts";
+import {
+  getLocale,
+  initI18n,
+  setLocale,
+  SUPPORTED_LOCALES,
+} from "../i18n/mod.ts";
+
+// i18n初期化
+await initI18n();
+const originalLocale = getLocale() as typeof SUPPORTED_LOCALES[number];
 
 Deno.test("channelIdSchema: 正常なチャンネルIDを検証", () => {
   const result = channelIdSchema.safeParse("C12345678");
@@ -71,4 +84,128 @@ Deno.test("nonEmptyStringSchema: 空白のみの文字列を許可", () => {
   // 空白のみの文字列は許可される（trimはしない）
   const result = nonEmptyStringSchema.safeParse("   ");
   assertEquals(result.success, true);
+});
+
+// i18n対応のテスト
+Deno.test({
+  name: "channelIdSchema: エラーメッセージが英語で表示される",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: () => {
+    setLocale("en");
+    const schema = createChannelIdSchema();
+    const result = schema.safeParse("invalid");
+
+    assertEquals(result.success, false);
+    if (!result.success) {
+      assertEquals(
+        result.error.errors[0].message,
+        "Channel ID must start with 'C' followed by uppercase alphanumeric characters",
+      );
+    }
+    setLocale(originalLocale); // 元に戻す
+  },
+});
+
+Deno.test({
+  name: "channelIdSchema: エラーメッセージが日本語で表示される",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: () => {
+    setLocale("ja");
+    const schema = createChannelIdSchema();
+    const result = schema.safeParse("invalid");
+
+    assertEquals(result.success, false);
+    if (!result.success) {
+      // 日本語のエラーメッセージを確認（部分一致）
+      assertEquals(
+        result.error.errors[0].message.includes("チャンネルID"),
+        true,
+      );
+    }
+    setLocale(originalLocale); // 元に戻す
+  },
+});
+
+Deno.test({
+  name: "userIdSchema: エラーメッセージが英語で表示される",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: () => {
+    setLocale("en");
+    const schema = createUserIdSchema();
+    const result = schema.safeParse("invalid");
+
+    assertEquals(result.success, false);
+    if (!result.success) {
+      assertEquals(
+        result.error.errors[0].message,
+        "User ID must start with 'U' or 'W' followed by uppercase alphanumeric characters",
+      );
+    }
+    setLocale(originalLocale); // 元に戻す
+  },
+});
+
+Deno.test({
+  name: "userIdSchema: 空のユーザーIDでエラーメッセージが日本語で表示される",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: () => {
+    setLocale("ja");
+    const schema = createUserIdSchema();
+    const result = schema.safeParse("");
+
+    assertEquals(result.success, false);
+    if (!result.success) {
+      // 日本語のエラーメッセージを確認（部分一致）
+      assertEquals(
+        result.error.errors[0].message.includes("ユーザーID"),
+        true,
+      );
+    }
+    setLocale(originalLocale); // 元に戻す
+  },
+});
+
+Deno.test({
+  name: "nonEmptyStringSchema: エラーメッセージが英語で表示される",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: () => {
+    setLocale("en");
+    const schema = createNonEmptyStringSchema();
+    const result = schema.safeParse("");
+
+    assertEquals(result.success, false);
+    if (!result.success) {
+      assertEquals(
+        result.error.errors[0].message,
+        "Value cannot be empty",
+      );
+    }
+    setLocale(originalLocale); // 元に戻す
+  },
+});
+
+Deno.test({
+  name: "nonEmptyStringSchema: エラーメッセージが日本語で表示される",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  fn: () => {
+    setLocale("ja");
+    const schema = createNonEmptyStringSchema();
+    const result = schema.safeParse("");
+
+    assertEquals(result.success, false);
+    if (!result.success) {
+      // 日本語のエラーメッセージを確認（部分一致）
+      assertEquals(
+        result.error.errors[0].message.includes("空"),
+        true,
+      );
+    }
+    setLocale(originalLocale); // 元に戻す
+  },
 });

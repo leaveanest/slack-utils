@@ -240,12 +240,43 @@ import {
 const channelId: ChannelId = channelIdSchema.parse("C12345678");
 ```
 
+### エラーメッセージの多言語化（i18n）
+
+Zodのエラーメッセージは自動的に多言語化されます。ファクトリー関数を使用することで、現在のロケールに応じたエラーメッセージが生成されます：
+
+```typescript
+import {
+  createChannelIdSchema,
+  createUserIdSchema,
+} from "../../lib/validation/schemas.ts";
+import { setLocale } from "../../lib/i18n/mod.ts";
+
+// 英語でバリデーション
+setLocale("en");
+const enSchema = createChannelIdSchema();
+const enResult = enSchema.safeParse("invalid");
+// エラー: "Channel ID must start with 'C' followed by uppercase alphanumeric characters"
+
+// 日本語でバリデーション
+setLocale("ja");
+const jaSchema = createChannelIdSchema();
+const jaResult = jaSchema.safeParse("invalid");
+// エラー: "チャンネルIDは'C'で始まり、その後に大文字の英数字が続く必要があります"
+```
+
+**注意事項：**
+
+- デフォルトエクスポートされた`channelIdSchema`などは、モジュール読み込み時のロケールで固定されます
+- 実行時にロケールを切り替える場合は、`createXxxSchema()`ファクトリー関数を使用してください
+- 環境変数`LOCALE`または`LANG`でデフォルトロケールを設定できます
+
 ### ベストプラクティス
 
 1. **入力値は必ずバリデーション**: 特にユーザー入力やAPI入力
 2. **共通スキーマを再利用**: 重複を避ける
-3. **エラーメッセージは明確に**: カスタムメッセージを提供
+3. **ファクトリー関数を使用**: 実行時にロケールを切り替える場合
 4. **safeParse()を使用**: try-catchが不要でエラーハンドリングが簡潔
+5. **エラーメッセージはi18n化**: ユーザー向けメッセージは必ず多言語対応
 
 ### 参考実装
 
