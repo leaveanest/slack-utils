@@ -1,6 +1,7 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
 import type { SlackAPIClient } from "deno-slack-sdk/types.ts";
 import { t } from "../../lib/i18n/mod.ts";
+import { channelIdSchema } from "../../lib/validation/schemas.ts";
 
 // Load category from environment variable
 const CATEGORY = Deno.env.get("SLACK_CATEGORY") || "Channel";
@@ -105,10 +106,14 @@ export default SlackFunction(
   ExampleFunctionDefinition,
   async ({ inputs, client }) => {
     try {
-      const summary = await retrieveChannelSummary(client, inputs.channel_id);
+      // Zodバリデーション
+      const channelId = channelIdSchema.parse(inputs.channel_id);
+
+      const summary = await retrieveChannelSummary(client, channelId);
       return { outputs: summary };
     } catch (error) {
       const message = error instanceof Error ? error.message : `${error}`;
+      console.error("Function error:", message);
       return { error: message };
     }
   },

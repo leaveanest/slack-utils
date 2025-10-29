@@ -90,6 +90,7 @@ CIでのフォーマットエラーやテスト失敗を防ぐため、ローカ
 ### 参考例
 
 `functions/example_function/` を参照してください：
+
 - `mod.ts`: JSDocコメント付きの関数実装
 - `test.ts`: 正常系・異常系のテストケース
 
@@ -203,3 +204,56 @@ deno test --allow-all lib/i18n/test.ts
 
 詳細は [`CLAUDE.md`](../../CLAUDE.md) の「🚨 例外処理ルール」セクションを参照してください。
 
+## バリデーション（Zod）ルール
+
+**重要: 入力値は必ずZodでバリデーションしてください。**
+
+### 必須事項
+
+1. **共通スキーマを使用**
+   - `lib/validation/schemas.ts` の既存スキーマを優先使用
+   - 新規スキーマは同ファイルに追加し、テストも作成
+
+2. **型推論を活用**
+   - `z.infer<typeof schema>` で型を自動生成
+   - 手動型定義の重複を避ける
+
+3. **safeParse() を推奨**
+   - try-catchが不要でエラーハンドリングが簡潔
+   - エラー詳細が取得しやすい
+
+### 使用例
+
+```typescript
+import { channelIdSchema } from "../../lib/validation/schemas.ts";
+import { t } from "../../lib/i18n/mod.ts";
+
+// Zodバリデーション（推奨パターン）
+const result = channelIdSchema.safeParse(inputs.channel_id);
+if (!result.success) {
+  throw new Error(t("errors.invalid_format", {
+    field: "channel_id",
+    error: result.error.message
+  }));
+}
+
+// または parse() を使用（簡潔だがtry-catchが必要）
+try {
+  const channelId = channelIdSchema.parse(inputs.channel_id);
+} catch (error) {
+  // エラーハンドリング
+}
+```
+
+### 新規スキーマの追加
+
+新しいスキーマを追加する場合：
+
+1. `lib/validation/schemas.ts` に追加
+2. JSDocコメントで説明を記述
+3. 型推論をエクスポート
+4. `lib/validation/test.ts` にテストを追加
+
+### 参考ドキュメント
+
+詳細は [`CLAUDE.md`](../../CLAUDE.md) の「🔒 バリデーション（Zod）」セクションを参照してください。

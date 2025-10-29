@@ -356,9 +356,10 @@ deno task cursor-ci
 1. **直接文字列のハードコード**（i18n化必須）
 2. **テストなしの関数追加**
 3. **JSDocコメントなしの公開関数**
-4. **`package.json`の作成**（Denoプロジェクトです）
-5. **暗黙的な`any`の使用**
-6. **インラインHTTPS imports**（`import_map.json`を使用）
+4. **バリデーションなしの入力処理**（Zod使用必須）
+5. **`package.json`の作成**（Denoプロジェクトです）
+6. **暗黙的な`any`の使用**
+7. **インラインHTTPS imports**（`import_map.json`を使用）
 
 ### CI/CDでの注意
 
@@ -381,6 +382,7 @@ deno task cursor-ci
 - `/slackapi/deno-slack-sdk` - Slack Deno SDK
 - `/websites/deno` - Deno公式ドキュメント
 - `/denoland/std` - Deno標準ライブラリ
+- `/colinhacks/zod` - Zodバリデーションライブラリ
 
 ## 🎯 ベストプラクティス
 
@@ -402,6 +404,82 @@ deno task cursor-ci
 1. **環境変数**: 機密情報は`.env`で管理
 2. **入力検証**: 全てのユーザー入力を検証
 3. **パーミッション**: 必要最小限の`--allow-*`フラグを使用
+
+## 🔒 バリデーション（Zod）
+
+このプロジェクトでは、型安全なバリデーションのために**Zod**を使用しています。
+
+### Zodの使用ルール
+
+#### 必須事項
+
+1. **全ての入力値をZodで検証**
+   - ユーザー入力
+   - API入力
+   - 環境変数
+   - 外部データソース
+
+2. **共通スキーマを優先使用**
+   - `lib/validation/schemas.ts` の既存スキーマを使用
+   - 新規スキーマは同ファイルに追加
+
+3. **型推論を活用**
+   - `z.infer<typeof schema>` で型を自動生成
+   - 手動で型定義を重複させない
+
+#### 基本パターン
+
+```typescript
+import { channelIdSchema } from "../../lib/validation/schemas.ts";
+
+// パターン1: parse（エラー時は例外をthrow）
+const channelId = channelIdSchema.parse(inputs.channel_id);
+
+// パターン2: safeParse（エラー時は結果オブジェクト）
+const result = channelIdSchema.safeParse(inputs.channel_id);
+if (!result.success) {
+  throw new Error(result.error.message);
+}
+```
+
+### 利用可能なスキーマ
+
+```typescript
+// Slackチャンネル ID
+channelIdSchema; // 例: "C12345678"
+
+// Slackユーザー ID
+userIdSchema; // 例: "U0812GLUZD2" または "W1234567890"
+
+// 空でない文字列
+nonEmptyStringSchema; // 最低1文字以上
+```
+
+### 新規スキーマの追加
+
+```typescript
+// lib/validation/schemas.ts に追加
+/**
+ * メールアドレス スキーマ
+ */
+export const emailSchema = z.string()
+  .email("Invalid email format")
+  .toLowerCase();
+
+export type Email = z.infer<typeof emailSchema>;
+```
+
+### テストの追加
+
+新規スキーマには必ずテストを追加：
+
+```typescript
+// lib/validation/test.ts に追加
+Deno.test("emailSchema: 正常なメールアドレスを検証", () => {
+  const result = emailSchema.safeParse("test@example.com");
+  assertEquals(result.success, true);
+});
+```
 
 ## 🚨 例外処理ルール
 
@@ -580,9 +658,10 @@ mcp_Context7_get - library - docs({
 
 1. JSDocコメントを書く
 2. 関数のインターフェースを定義
-3. テストケースを書く
-4. 実装する
-5. I18n化する
+3. Zodスキーマを定義（バリデーション）
+4. テストケースを書く
+5. 実装する
+6. I18n化する
 
 ### 3. 検証フェーズ
 
@@ -610,5 +689,6 @@ mcp_voicevox_speak({
 - **Context7で調査**: 外部ライブラリはContext7で
 - **テストは必須**: 全ての新機能にテストを追加
 - **I18nを忘れずに**: ユーザー向けメッセージは必ず多言語化
+- **Zodでバリデーション**: 全ての入力値を型安全に検証
 
 **Happy Coding! 🚀**
