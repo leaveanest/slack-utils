@@ -183,6 +183,75 @@ functions/example_function/
 - 例外処理:
   [`docs/exception-handling-guide.md`](docs/exception-handling-guide.md)
 
+## バリデーション（Zod）
+
+このプロジェクトでは、型安全なバリデーションのために**Zod**を使用しています。
+
+### Zodとは
+
+- TypeScript-firstのスキーマ宣言・バリデーションライブラリ
+- 静的型推論により、実行時エラーを削減
+- シンプルで読みやすいAPI
+
+### 基本的な使い方
+
+#### 1. 共通スキーマの使用
+
+`lib/validation/schemas.ts` に定義された共通スキーマを使用：
+
+```typescript
+import { channelIdSchema } from "../../lib/validation/schemas.ts";
+
+// バリデーション
+const channelId = channelIdSchema.parse(inputs.channel_id);
+// または safeParse でエラーハンドリング
+const result = channelIdSchema.safeParse(inputs.channel_id);
+if (!result.success) {
+  throw new Error(result.error.message);
+}
+```
+
+#### 2. 利用可能なスキーマ
+
+- **`channelIdSchema`**: Slackチャンネル ID（`C + 英数字大文字`）
+- **`userIdSchema`**: Slackユーザー ID（`U/W + 英数字大文字`）
+- **`nonEmptyStringSchema`**: 空でない文字列
+
+#### 3. カスタムスキーマの作成
+
+新しいバリデーションが必要な場合は、`lib/validation/schemas.ts` に追加：
+
+```typescript
+export const emailSchema = z.string()
+  .email("Invalid email format")
+  .toLowerCase();
+```
+
+### 型推論の活用
+
+Zodスキーマから自動的に型を推論できます：
+
+```typescript
+import {
+  type ChannelId,
+  channelIdSchema,
+} from "../../lib/validation/schemas.ts";
+
+const channelId: ChannelId = channelIdSchema.parse("C12345678");
+```
+
+### ベストプラクティス
+
+1. **入力値は必ずバリデーション**: 特にユーザー入力やAPI入力
+2. **共通スキーマを再利用**: 重複を避ける
+3. **エラーメッセージは明確に**: カスタムメッセージを提供
+4. **safeParse()を使用**: try-catchが不要でエラーハンドリングが簡潔
+
+### 参考実装
+
+`functions/example_function/mod.ts`
+でZodを使用したバリデーション例を確認できます。
+
 ## テストと品質チェック
 
 ### 自動チェック（推奨）
