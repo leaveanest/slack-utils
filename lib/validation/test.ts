@@ -1,5 +1,11 @@
 import { assertEquals } from "std/testing/asserts.ts";
 import {
+  getLocale,
+  initI18n,
+  setLocale,
+  SUPPORTED_LOCALES,
+} from "../i18n/mod.ts";
+import {
   channelIdSchema,
   createChannelIdSchema,
   createNonEmptyStringSchema,
@@ -7,12 +13,6 @@ import {
   nonEmptyStringSchema,
   userIdSchema,
 } from "./schemas.ts";
-import {
-  getLocale,
-  initI18n,
-  setLocale,
-  SUPPORTED_LOCALES,
-} from "../i18n/mod.ts";
 
 // i18n初期化
 await initI18n();
