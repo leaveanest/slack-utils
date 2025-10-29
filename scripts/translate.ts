@@ -1,7 +1,7 @@
 /**
  * Automatic translation script using OpenAI API
  *
- * This script translates English locale files to Japanese using GPT-4.
+ * This script translates English locale files to Japanese using GPT-4o.
  * It preserves placeholders (e.g., {name}) and JSON structure.
  *
  * Usage:
@@ -49,7 +49,7 @@ IMPORTANT RULES:
 Return ONLY the translated JSON, without any explanation or markdown formatting.`;
 
   const request: TranslationRequest = {
-    model: "gpt-4",
+    model: "gpt-4o",
     messages: [
       { role: "system", content: systemPrompt },
       {
@@ -138,7 +138,7 @@ async function main() {
   }
 
   // Translate using OpenAI API
-  console.log("🤖 Translating with OpenAI API (GPT-4)...");
+  console.log("🤖 Translating with OpenAI API (GPT-4o)...");
   console.log("   This may take a moment...\n");
 
   let translatedContent: string;
