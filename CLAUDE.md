@@ -481,6 +481,66 @@ Deno.test("emailSchema: 正常なメールアドレスを検証", () => {
 });
 ```
 
+### エラーメッセージの多言語化（i18n）
+
+Zodのエラーメッセージはi18n対応されています。ファクトリー関数を使用することで、実行時のロケールに応じたエラーメッセージが生成されます：
+
+```typescript
+import { createChannelIdSchema } from "../../lib/validation/schemas.ts";
+import { setLocale } from "../../lib/i18n/mod.ts";
+
+// 英語でバリデーション
+setLocale("en");
+const enSchema = createChannelIdSchema();
+const enResult = enSchema.safeParse("invalid");
+// エラー: "Channel ID must start with 'C' followed by uppercase alphanumeric characters"
+
+// 日本語でバリデーション
+setLocale("ja");
+const jaSchema = createChannelIdSchema();
+const jaResult = jaSchema.safeParse("invalid");
+// エラー: "チャンネルIDは'C'で始まり、その後に大文字の英数字が続く必要があります"
+```
+
+**重要：**
+
+- デフォルトエクスポートされたスキーマ（`channelIdSchema`など）は、モジュール読み込み時のロケールで固定されます
+- 実行時にロケールを切り替える場合は、`createXxxSchema()`ファクトリー関数を必ず使用してください
+- 新規スキーマを追加する際は、ファクトリー関数とデフォルトエクスポートの両方を提供してください
+
+**新規スキーマのi18n化例：**
+
+```typescript
+// lib/validation/schemas.ts
+import { z } from "zod";
+import { t } from "../i18n/mod.ts";
+
+// ファクトリー関数（i18n対応）
+export function createEmailSchema() {
+  return z.string()
+    .email(t("errors.validation.email_format"))
+    .toLowerCase();
+}
+
+// デフォルトエクスポート（後方互換性）
+export const emailSchema = createEmailSchema();
+
+// 型推論
+export type Email = z.infer<ReturnType<typeof createEmailSchema>>;
+```
+
+そして、`locales/en.json`にエラーメッセージを追加：
+
+```json
+{
+  "errors": {
+    "validation": {
+      "email_format": "Invalid email format"
+    }
+  }
+}
+```
+
 ## 🚨 例外処理ルール
 
 **重要**: API通信とバリデーションでは、必ず適切な例外処理を実装してください。
