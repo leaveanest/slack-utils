@@ -79,7 +79,7 @@ jobs:
             This PR contains automatically translated Japanese locale based on changes to `locales/en.json`.
 
             ### Changes
-            - ✅ Translated with OpenAI GPT-4
+            - ✅ Translated with OpenAI gpt-4o
             - ✅ Placeholders preserved
             - ✅ JSON structure maintained
 

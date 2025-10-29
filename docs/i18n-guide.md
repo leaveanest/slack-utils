@@ -147,7 +147,7 @@ GitHub Actionsの自動翻訳は以下の場合に実行されます：
 ### ワークフローの動作
 
 1. `locales/en.json` を読み込み
-2. OpenAI API (GPT-4o) で日本語に翻訳
+2. OpenAI API (gpt-4o) で日本語に翻訳
 3. `locales/ja.json` を更新
 4. 変更があればPRを自動作成
 
@@ -288,6 +288,7 @@ Deno.test("新しいエラーメッセージが翻訳される", async () => {
 **原因と対処:**
 
 1. パラメータを渡していない
+
    ```typescript
    // ❌ 悪い例
    t("messages.greeting");
@@ -295,7 +296,9 @@ Deno.test("新しいエラーメッセージが翻訳される", async () => {
    // ✅ 良い例
    t("messages.greeting", { name: "Alice" });
    ```
+
 2. パラメータ名が一致しない
+
    ```typescript
    // en.json: "Hello, {name}!"
 
@@ -327,21 +330,27 @@ Deno.test("新しいエラーメッセージが翻訳される", async () => {
 **原因と対処:**
 
 1. **翻訳漏れ**
+
    ```bash
    # エラー: Missing translation in ja.json: "errors.new_error"
    ```
+
    - 自動翻訳を実行するか、手動で `ja.json` に追加
 
 2. **プレースホルダー不一致**
+
    ```bash
    # エラー: Missing placeholder {userId} in ja.json
    ```
+
    - `ja.json` の該当メッセージにプレースホルダーを追加
 
 3. **余分なキー**
+
    ```bash
    # 警告: Extra key in ja.json: "errors.old_error"
    ```
+
    - 不要なキーを削除するか、英語ファイルにも追加
 
 ### テストが失敗する
