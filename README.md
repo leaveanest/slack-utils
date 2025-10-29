@@ -244,6 +244,37 @@ export default SlackFunction(MyFunction, async ({ inputs, client }) => {
 詳細は [`docs/exception-handling-guide.md`](docs/exception-handling-guide.md)
 を参照してください。
 
+## バリデーション（Zod）
+
+このプロジェクトでは、型安全なバリデーションのために**Zod**を使用しています。
+
+### 利用可能なスキーマ
+
+`lib/validation/schemas.ts` に以下の共通スキーマが定義されています：
+
+- **`channelIdSchema`**: Slackチャンネル ID（`C12345678` 形式）
+- **`userIdSchema`**: Slackユーザー ID（`U0812GLUZD2` または `W1234567890`
+  形式）
+- **`nonEmptyStringSchema`**: 空でない文字列
+
+### 使用例
+
+```typescript
+import { channelIdSchema } from "../../lib/validation/schemas.ts";
+
+// パース（エラー時は例外をthrow）
+const channelId = channelIdSchema.parse(inputs.channel_id);
+
+// 安全なパース（エラー時は結果オブジェクトを返す）
+const result = channelIdSchema.safeParse(inputs.channel_id);
+if (!result.success) {
+  console.error(result.error);
+}
+```
+
+詳細は [`CONTRIBUTING.md`](CONTRIBUTING.md)
+の「バリデーション（Zod）」セクションを参照してください。
+
 ## 開発環境のセットアップ
 
 ### Deno のインストール
