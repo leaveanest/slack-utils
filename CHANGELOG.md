@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.5.0](https://github.com/leaveanest/slack-utils/compare/v1.4.0...v1.5.0) (2025-10-29)
+
+
+### Features
+
+* i18n翻訳モデルをGPT-4からgpt-4oに変更 ([8ecb6ea](https://github.com/leaveanest/slack-utils/commit/8ecb6eac7eff7f8bf7041b554b95ae12dde73453))
+* Zodバリデーションライブラリを導入 ([9d96829](https://github.com/leaveanest/slack-utils/commit/9d96829852e1a50231529b19ad03a82e1854016b))
+
+
+### Bug Fixes
+
+* OpenAIモデル名をgpt-4oに統一 ([4f0b01c](https://github.com/leaveanest/slack-utils/commit/4f0b01c39ead4fd3778f9a2a35d732c0ccdeda5c))
+
 ## [1.4.0](https://github.com/leaveanest/slack-utils/compare/v1.3.0...v1.4.0) (2025-10-24)
 
 
