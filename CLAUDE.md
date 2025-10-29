@@ -277,7 +277,7 @@ t("messages.channel_summary", {
 
 - `locales/en.json`を更新してpushすると**自動的に日本語翻訳が生成**されます
 - GitHub Actionsが`locales/ja.json`を更新してPRを作成
-- OpenAI GPT-4を使用
+- OpenAI gpt-4oを使用
 
 詳細: `docs/i18n-guide.md`
 
