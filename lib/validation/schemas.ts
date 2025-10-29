@@ -4,7 +4,10 @@
  * i18n対応のエラーメッセージをサポート
  */
 import { z } from "zod";
-import { t } from "../i18n/mod.ts";
+import { initI18n, t } from "../i18n/mod.ts";
+
+// トップレベルawaitでi18nを初期化
+await initI18n();
 
 /**
  * i18n対応のSlackチャンネル ID スキーマを生成
