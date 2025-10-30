@@ -50,7 +50,7 @@ jobs:
       - name: Run translation script
         if: steps.check_changes.outputs.changed == 'true'
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           deno run --allow-env --allow-read --allow-write --allow-net scripts/translate.ts
 
@@ -79,7 +79,7 @@ jobs:
             This PR contains automatically translated Japanese locale based on changes to `locales/en.json`.
 
             ### Changes
-            - ✅ Translated with OpenAI gpt-4o
+            - ✅ Translated with Anthropic Claude Haiku 4.5
             - ✅ Placeholders preserved
             - ✅ JSON structure maintained
 
