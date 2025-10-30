@@ -22,6 +22,9 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
     steps:
       - name: Slack webhook configured?
         id: guard
@@ -44,6 +47,7 @@ jobs:
           CHANNEL: "#05-miyazawa"
           USERNAME: "slack-utils Bot"
           ICON_EMOJI: ":robot_face:"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
@@ -251,9 +255,68 @@ jobs:
               URL="$(jq -r '.workflow_run.html_url' "$GITHUB_EVENT_PATH")"
               BRANCH="$(jq -r '.workflow_run.head_branch' "$GITHUB_EVENT_PATH")"
               COMMIT_MSG="$(jq -r '.workflow_run.head_commit.message' "$GITHUB_EVENT_PATH" | head -n 1)"
+              COMMIT_SHA="$(jq -r '.workflow_run.head_sha' "$GITHUB_EVENT_PATH" | cut -c1-7)"
               AUTHOR="$(jq -r '.workflow_run.head_commit.author.name' "$GITHUB_EVENT_PATH")"
+              TRIGGERING_ACTOR="$(jq -r '.workflow_run.triggering_actor.login' "$GITHUB_EVENT_PATH")"
               RUN_NUMBER="$(jq -r '.workflow_run.run_number' "$GITHUB_EVENT_PATH")"
+              RUN_ATTEMPT="$(jq -r '.workflow_run.run_attempt' "$GITHUB_EVENT_PATH")"
+              JOBS_URL="$(jq -r '.workflow_run.jobs_url' "$GITHUB_EVENT_PATH")"
+              CREATED_AT="$(jq -r '.workflow_run.created_at' "$GITHUB_EVENT_PATH")"
+              UPDATED_AT="$(jq -r '.workflow_run.updated_at' "$GITHUB_EVENT_PATH")"
 
+              # 実行時間を計算（秒）
+              CREATED_TIMESTAMP=$(date -u -d "$CREATED_AT" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$CREATED_AT" +%s 2>/dev/null || echo "0")
+              UPDATED_TIMESTAMP=$(date -u -d "$UPDATED_AT" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$UPDATED_AT" +%s 2>/dev/null || echo "0")
+              DURATION_SECONDS=$((UPDATED_TIMESTAMP - CREATED_TIMESTAMP))
+
+              # 分と秒に変換
+              if [ "$DURATION_SECONDS" -gt 0 ]; then
+                DURATION_MINUTES=$((DURATION_SECONDS / 60))
+                DURATION_SECS=$((DURATION_SECONDS % 60))
+                if [ "$DURATION_MINUTES" -gt 0 ]; then
+                  DURATION="${DURATION_MINUTES}分${DURATION_SECS}秒"
+                else
+                  DURATION="${DURATION_SECS}秒"
+                fi
+              else
+                DURATION="計算不可"
+              fi
+
+              # GitHub APIからジョブの詳細を取得
+              JOBS_DATA=""
+              JOB_SUMMARY=""
+              FAILED_JOBS=""
+
+              if [ -n "${GITHUB_TOKEN:-}" ]; then
+                JOBS_RESPONSE=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+                  -H "Accept: application/vnd.github.v3+json" \
+                  "$JOBS_URL")
+
+                # ジョブ一覧を取得
+                JOBS_DATA=$(echo "$JOBS_RESPONSE" | jq -r '.jobs[] | "\(.name):\(.conclusion)"')
+
+                # 成功・失敗のカウント
+                SUCCESS_COUNT=$(echo "$JOBS_DATA" | grep -c ":success" || echo "0")
+                FAILURE_COUNT=$(echo "$JOBS_DATA" | grep -c ":failure" || echo "0")
+                TOTAL_COUNT=$(echo "$JOBS_DATA" | wc -l | tr -d ' ')
+
+                # ジョブサマリーを作成
+                if [ "$TOTAL_COUNT" -gt 0 ]; then
+                  JOB_SUMMARY="${SUCCESS_COUNT}/${TOTAL_COUNT}件成功"
+
+                  # 失敗したジョブの詳細
+                  if [ "$FAILURE_COUNT" -gt 0 ]; then
+                    FAILED_JOBS=$(echo "$JOBS_RESPONSE" | jq -r '.jobs[] | select(.conclusion == "failure") | "• " + .name + " (Step: " + (.steps[] | select(.conclusion == "failure") | .name) + ")"' | head -n 5)
+                    if [ -z "$FAILED_JOBS" ]; then
+                      FAILED_JOBS=$(echo "$JOBS_RESPONSE" | jq -r '.jobs[] | select(.conclusion == "failure") | "• " + .name' | head -n 5)
+                    fi
+                  fi
+                fi
+              else
+                JOB_SUMMARY="ジョブ情報なし"
+              fi
+
+              # 結論に応じて色とテキストを設定
               if [ "$CONCLUSION" = "success" ]; then
                 COLOR="good"
                 EMOJI="✅"
@@ -271,6 +334,7 @@ jobs:
                 exit 0
               fi
 
+              # ペイロード作成
               PAYLOAD=$(jq -nc \
                 --arg channel "$CHANNEL" \
                 --arg username "$USERNAME" \
@@ -281,8 +345,14 @@ jobs:
                 --arg url "$URL" \
                 --arg branch "$BRANCH" \
                 --arg commit "$COMMIT_MSG" \
+                --arg commit_sha "$COMMIT_SHA" \
                 --arg author "$AUTHOR" \
+                --arg trigger "$TRIGGERING_ACTOR" \
                 --arg run_number "$RUN_NUMBER" \
+                --arg run_attempt "$RUN_ATTEMPT" \
+                --arg duration "$DURATION" \
+                --arg job_summary "$JOB_SUMMARY" \
+                --arg failed_jobs "$FAILED_JOBS" \
                 --arg color "$COLOR" \
                 '{
                   channel: $channel,
@@ -291,13 +361,17 @@ jobs:
                   text: ($emoji + " " + $text),
                   attachments: [{
                     color: $color,
-                    title: ("Run #" + $run_number + ": " + $workflow),
+                    title: ("Run #" + $run_number + " (試行 " + $run_attempt + "): " + $workflow),
                     title_link: $url,
-                    fields: [
+                    fields: ([
                       {title: "ブランチ", value: $branch, short: true},
+                      {title: "実行時間", value: $duration, short: true},
+                      {title: "コミット", value: ($commit + " (`" + $commit_sha + "`)"), short: false},
                       {title: "作成者", value: $author, short: true},
-                      {title: "コミット", value: $commit, short: false}
-                    ],
+                      {title: "トリガー", value: ("@" + $trigger), short: true},
+                      ($job_summary != "" and $job_summary != "ジョブ情報なし" | if . then {title: "ジョブ結果", value: $job_summary, short: true} else empty end),
+                      ($failed_jobs != "" | if . then {title: "❌ 失敗したジョブ", value: $failed_jobs, short: false} else empty end)
+                    ]),
                     footer: "GitHub Actions",
                     footer_icon: "https://github.githubassets.com/favicon.ico"
                   }]
