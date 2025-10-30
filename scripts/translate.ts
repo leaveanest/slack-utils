@@ -1,38 +1,40 @@
 /**
- * Automatic translation script using OpenAI API
+ * Automatic translation script using Anthropic Claude API
  *
- * This script translates English locale files to Japanese using gpt-4o.
+ * This script translates English locale files to Japanese using Claude Haiku 4.5.
  * It preserves placeholders (e.g., {name}) and JSON structure.
  *
  * Usage:
  *   deno run --allow-env --allow-read --allow-write --allow-net scripts/translate.ts
  */
 
-interface TranslationRequest {
-  model: string;
-  messages: Array<{
-    role: string;
-    content: string;
-  }>;
-  temperature: number;
+interface ClaudeMessage {
+  role: string;
+  content: string;
 }
 
-interface TranslationResponse {
-  choices: Array<{
-    message: {
-      content: string;
-    };
+interface ClaudeRequest {
+  model: string;
+  max_tokens: number;
+  messages: ClaudeMessage[];
+}
+
+interface ClaudeResponse {
+  content: Array<{
+    type: string;
+    text: string;
   }>;
+  stop_reason: string;
 }
 
 /**
- * Call OpenAI API to translate text
+ * Call Anthropic Claude API to translate text
  *
  * @param text - Text to translate
- * @param apiKey - OpenAI API key
+ * @param apiKey - Anthropic API key
  * @returns Translated text
  */
-async function translateWithOpenAI(
+async function translateWithClaude(
   text: string,
   apiKey: string,
 ): Promise<string> {
@@ -48,37 +50,38 @@ IMPORTANT RULES:
 
 Return ONLY the translated JSON, without any explanation or markdown formatting.`;
 
-  const request: TranslationRequest = {
-    model: "gpt-4o",
+  const request: ClaudeRequest = {
+    model: "claude-haiku-4-5-20251001",
+    max_tokens: 4096,
     messages: [
-      { role: "system", content: systemPrompt },
       {
         role: "user",
-        content: `Translate this JSON to Japanese:\n\n${text}`,
+        content:
+          `${systemPrompt}\n\nTranslate this JSON to Japanese:\n\n${text}`,
       },
     ],
-    temperature: 0.3, // Lower temperature for more consistent translations
   };
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`,
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
     },
     body: JSON.stringify(request),
   });
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`OpenAI API error: ${response.status} - ${error}`);
+    throw new Error(`Anthropic API error: ${response.status} - ${error}`);
   }
 
-  const data: TranslationResponse = await response.json();
-  const translatedText = data.choices[0]?.message?.content;
+  const data: ClaudeResponse = await response.json();
+  const translatedText = data.content[0]?.text;
 
   if (!translatedText) {
-    throw new Error("No translation returned from OpenAI API");
+    throw new Error("No translation returned from Anthropic Claude API");
   }
 
   // Remove markdown code blocks if present
@@ -94,10 +97,12 @@ Return ONLY the translated JSON, without any explanation or markdown formatting.
 async function main() {
   console.log("🌍 Starting automatic translation...\n");
 
-  // Check for OpenAI API key
-  const apiKey = Deno.env.get("OPENAI_API_KEY");
+  // Check for Anthropic API key
+  const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) {
-    console.error("❌ Error: OPENAI_API_KEY environment variable is not set");
+    console.error(
+      "❌ Error: ANTHROPIC_API_KEY environment variable is not set",
+    );
     console.error(
       "   Please set it in your .env file or environment variables",
     );
@@ -137,13 +142,15 @@ async function main() {
     console.log("📝 No existing Japanese locale found, creating new one");
   }
 
-  // Translate using OpenAI API
-  console.log("🤖 Translating with OpenAI API (gpt-4o)...");
+  // Translate using Anthropic Claude API
+  console.log(
+    "🤖 Translating with Anthropic Claude API (claude-haiku-4-5-20251001)...",
+  );
   console.log("   This may take a moment...\n");
 
   let translatedContent: string;
   try {
-    translatedContent = await translateWithOpenAI(
+    translatedContent = await translateWithClaude(
       JSON.stringify(enData, null, 2),
       apiKey,
     );

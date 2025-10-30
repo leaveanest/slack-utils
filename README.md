@@ -462,7 +462,7 @@ Settings → Secrets and variables → Actions
 オプションのシークレット：
 
 - `CODECOV_TOKEN` - コードカバレッジレポート用（プライベートリポジトリの場合）
-- `OPENAI_API_KEY` - Codex CLI用（issue-to-prワークフロー使用時）
+- `ANTHROPIC_API_KEY` - i18n自動翻訳用（Claude Haiku 4.5を使用）
 - `NPM_TOKEN` - npm公開用（npmパッケージとして公開する場合）
 - `JSR_TOKEN` - JSR公開用（JSRパッケージとして公開する場合）
 

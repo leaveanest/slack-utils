@@ -147,7 +147,7 @@ GitHub Actionsの自動翻訳は以下の場合に実行されます：
 ### ワークフローの動作
 
 1. `locales/en.json` を読み込み
-2. OpenAI API (gpt-4o) で日本語に翻訳
+2. Anthropic Claude API (Claude Haiku 4.5) で日本語に翻訳
 3. `locales/ja.json` を更新
 4. 変更があればPRを自動作成
 
