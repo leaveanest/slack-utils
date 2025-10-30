@@ -78,7 +78,13 @@ Return ONLY the translated JSON, without any explanation or markdown formatting.
   }
 
   const data: ClaudeResponse = await response.json();
-  const translatedText = data.content[0]?.text;
+
+  // Concatenate all text blocks from the content array
+  // Claude can split long responses across multiple blocks
+  const translatedText = data.content
+    .filter((block) => block.type === "text")
+    .map((block) => block.text)
+    .join("");
 
   if (!translatedText) {
     throw new Error("No translation returned from Anthropic Claude API");
