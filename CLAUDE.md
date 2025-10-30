@@ -483,30 +483,40 @@ Deno.test("emailSchema: 正常なメールアドレスを検証", () => {
 
 ### エラーメッセージの多言語化（i18n）
 
-Zodのエラーメッセージはi18n対応されています。ファクトリー関数を使用することで、実行時のロケールに応じたエラーメッセージが生成されます：
+Zodのエラーメッセージは**動的に多言語化**されます。`.superRefine()`による実装により、バリデーション実行時に現在のロケールに応じたエラーメッセージが生成されます：
 
 ```typescript
-import { createChannelIdSchema } from "../../lib/validation/schemas.ts";
+import { channelIdSchema } from "../../lib/validation/schemas.ts";
 import { setLocale } from "../../lib/i18n/mod.ts";
 
-// 英語でバリデーション
+// 英語でバリデーション実行
 setLocale("en");
-const enSchema = createChannelIdSchema();
-const enResult = enSchema.safeParse("invalid");
+const result1 = channelIdSchema.safeParse("invalid");
 // エラー: "Channel ID must start with 'C' followed by uppercase alphanumeric characters"
 
-// 日本語でバリデーション
+// 同じスキーマインスタンスで日本語に切り替え
 setLocale("ja");
-const jaSchema = createChannelIdSchema();
-const jaResult = jaSchema.safeParse("invalid");
+const result2 = channelIdSchema.safeParse("invalid");
 // エラー: "チャンネルIDは'C'で始まり、その後に大文字の英数字が続く必要があります"
+
+// 英語に戻す
+setLocale("en");
+const result3 = channelIdSchema.safeParse("invalid");
+// エラー: "Channel ID must start with 'C' followed by uppercase alphanumeric characters"
 ```
 
-**重要：**
+**実装の特徴：**
 
-- デフォルトエクスポートされたスキーマ（`channelIdSchema`など）は、モジュール読み込み時のロケールで固定されます
-- 実行時にロケールを切り替える場合は、`createXxxSchema()`ファクトリー関数を必ず使用してください
-- 新規スキーマを追加する際は、ファクトリー関数とデフォルトエクスポートの両方を提供してください
+- **動的評価**: `.superRefine()`により、`t()`関数が検証時に毎回呼ばれます
+- **デフォルトスキーマ対応**: `channelIdSchema`等もロケール変更に自動対応
+- **スキーマ再作成不要**: 同じインスタンスで異なるロケールに対応
+- **レビューフィードバック対応**:
+  エラーメッセージが検証時まで評価されないため、ロケール変更を正しく反映
+
+**ファクトリー関数（オプション）：**
+
+後方互換性のため、ファクトリー関数（`createChannelIdSchema()`等）も提供されていますが、
+デフォルトスキーマも動的に対応するため、使用は任意です。
 
 **新規スキーマのi18n化例：**
 
@@ -515,14 +525,23 @@ const jaResult = jaSchema.safeParse("invalid");
 import { z } from "zod";
 import { t } from "../i18n/mod.ts";
 
-// ファクトリー関数（i18n対応）
+/**
+ * メールアドレス スキーマを生成（i18n対応）
+ */
 export function createEmailSchema() {
-  return z.string()
-    .email(t("errors.validation.email_format"))
-    .toLowerCase();
+  return z.string().superRefine((val, ctx) => {
+    // メールアドレス形式チェック
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.invalid_string,
+        validation: "email",
+        message: t("errors.validation.email_format"),
+      });
+    }
+  }).transform((val) => val.toLowerCase());
 }
 
-// デフォルトエクスポート（後方互換性）
+// デフォルトエクスポート（動的i18n対応）
 export const emailSchema = createEmailSchema();
 
 // 型推論
@@ -540,6 +559,12 @@ export type Email = z.infer<ReturnType<typeof createEmailSchema>>;
   }
 }
 ```
+
+**ポイント：**
+
+- `.superRefine()`で検証ロジックを実装
+- `t()`関数は検証時に呼ばれるため、ロケール変更に自動対応
+- デフォルトエクスポートも動的に多言語化される
 
 ## 🚨 例外処理ルール
 

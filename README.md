@@ -274,26 +274,34 @@ if (!result.success) {
 
 ### エラーメッセージの多言語化
 
-Zodのバリデーションエラーメッセージは自動的に多言語化されます：
+Zodのバリデーションエラーメッセージは**動的に多言語化**されます。
+`.superRefine()`を使用しているため、バリデーション実行時に現在のロケールに応じたエラーメッセージが表示されます：
 
 ```typescript
-import { createChannelIdSchema } from "../../lib/validation/schemas.ts";
+import { channelIdSchema } from "../../lib/validation/schemas.ts";
 import { setLocale } from "../../lib/i18n/mod.ts";
 
-// 英語でエラーメッセージを取得
+// 英語でバリデーション実行
 setLocale("en");
-const schema1 = createChannelIdSchema();
-const result1 = schema1.safeParse("invalid");
+const result1 = channelIdSchema.safeParse("invalid");
 // エラー: "Channel ID must start with 'C' followed by uppercase alphanumeric characters"
 
-// 日本語でエラーメッセージを取得
+// 同じスキーマインスタンスで日本語に切り替え
 setLocale("ja");
-const schema2 = createChannelIdSchema();
-const result2 = schema2.safeParse("invalid");
+const result2 = channelIdSchema.safeParse("invalid");
 // エラー: "チャンネルIDは'C'で始まり、その後に大文字の英数字が続く必要があります"
+
+// 英語に戻す
+setLocale("en");
+const result3 = channelIdSchema.safeParse("invalid");
+// エラー: "Channel ID must start with 'C' followed by uppercase alphanumeric characters"
 ```
 
-環境変数 `LOCALE` または `LANG` で言語を切り替えられます。
+**ポイント：**
+
+- デフォルトスキーマ（`channelIdSchema`等）もロケール変更に**動的に対応**します
+- スキーマを再作成する必要はありません
+- 環境変数 `LOCALE` または `LANG` でデフォルトロケールを設定できます
 
 詳細は [`CONTRIBUTING.md`](CONTRIBUTING.md)
 の「バリデーション（Zod）」セクションを参照してください。
