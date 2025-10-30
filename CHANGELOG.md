@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/leaveanest/slack-utils/compare/v1.5.0...v1.6.0) (2025-10-30)
+
+
+### Features
+
+* i18n翻訳をOpenAI gpt-4oからClaude Haiku 4.5に移行 ([82800b4](https://github.com/leaveanest/slack-utils/commit/82800b4c229ef5d53e8cbe8a5d71dd7803ad603e))
+
+
+### Bug Fixes
+
+* Claudeの複数contentブロックを結合して翻訳を取得 ([994ad3e](https://github.com/leaveanest/slack-utils/commit/994ad3e3e295edf5bbb781b4f0c3e7961cf6dcf4))
+
 ## [1.5.0](https://github.com/leaveanest/slack-utils/compare/v1.4.0...v1.5.0) (2025-10-29)
 
 
