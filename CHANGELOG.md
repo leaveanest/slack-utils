@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/leaveanest/slack-utils/compare/v1.6.0...v1.7.0) (2025-10-30)
+
+
+### Features
+
+* CI通知を大幅強化して詳細情報を追加 ([1f74365](https://github.com/leaveanest/slack-utils/commit/1f74365ab341ec180807b92c85fab0382a9d1018))
+* Slack通知を詳細情報を含むリッチフォーマットに強化 ([2aa73d2](https://github.com/leaveanest/slack-utils/commit/2aa73d22849175012f752f977ad82e9d298850a5))
+
 ## [1.6.0](https://github.com/leaveanest/slack-utils/compare/v1.5.0...v1.6.0) (2025-10-30)
 
 
