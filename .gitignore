@@ -11,3 +11,7 @@ cov.lcov
 # Review materials (do not push)
 docs/review-prep.md
 docs/review-presentation.md
+
+# Claude Code
+.claude/
+CLAUDE.local.md
