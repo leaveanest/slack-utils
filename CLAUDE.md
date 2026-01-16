@@ -359,6 +359,57 @@ deno task cursor-ci
 - **Denoバージョン**: v2.x を使用
 - **ロックファイル**: `deno.lock` v5形式
 
+## 🤖 Claude Code Action（GitHub自動化）
+
+このプロジェクトでは、GitHub上でClaude Codeを自動実行できます。
+
+### Issue → PR 自動実装
+
+Issueに `claude-ready` ラベルを付けると、Claudeが自動で：
+
+1. Issueの内容を分析
+2. 必要なコードを実装
+3. テストを追加
+4. PRを作成
+
+**使い方：**
+
+1. Issueを作成（実装してほしい内容を詳しく記述）
+2. `claude-ready` ラベルを付与
+3. Claudeが自動でブランチを作成してPRを提出
+
+### @claude メンション
+
+IssueやPRのコメントで `@claude` とメンションすると、Claudeが応答します。
+
+```
+@claude このエラーの原因を調べてください
+@claude テストを追加してください
+@claude コードレビューをお願いします
+```
+
+### PR 自動コードレビュー
+
+PRが作成・更新されると、Claudeが自動でコードレビューを実行します。
+
+**レビュー観点：**
+
+- CLAUDE.md準拠
+- 型安全性
+- エラーハンドリング
+- i18n対応
+- テストカバレッジ
+- セキュリティ
+
+### セットアップ
+
+1. リポジトリのSecrets に `ANTHROPIC_API_KEY` を追加
+2. ワークフローファイルは既に設定済み（`.github/workflows/issue-to-pr.yml`,
+   `.github/workflows/claude-pr-review.yml`）
+
+詳細:
+[anthropics/claude-code-action](https://github.com/anthropics/claude-code-action)
+
 ## 📚 参考ドキュメント
 
 ### プロジェクト内
