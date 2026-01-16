@@ -11,10 +11,11 @@ on:
 
 jobs:
   implement_with_claude:
-    # claude-ready ラベルが付与された場合、または @claude メンションがあった場合に実行
+    # claude-ready ラベルが付与された場合、または Issue への @claude メンションがあった場合に実行
+    # Note: issue_comment はPRコメントでも発火するため、PRは除外する
     if: |
       (github.event_name == 'issues' && github.event.label.name == 'claude-ready') ||
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude'))
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude') && github.event.issue.pull_request == null)
     runs-on: ubuntu-latest
     permissions:
       contents: write
