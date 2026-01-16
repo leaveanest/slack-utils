@@ -453,12 +453,53 @@ Settings → Secrets and variables → Actions
 必須のシークレット：
 
 - `SLACK_WEBHOOK` - Slack通知用のIncoming Webhook URL
+- `ANTHROPIC_API_KEY` - Claude Code Action
+  用のAPIキー（Issue自動実装・PRレビュー）
 
 オプションのシークレット：
 
 - `CODECOV_TOKEN` - コードカバレッジレポート用（プライベートリポジトリの場合）
 - `NPM_TOKEN` - npm公開用（npmパッケージとして公開する場合）
 - `JSR_TOKEN` - JSR公開用（JSRパッケージとして公開する場合）
+
+## Claude Code Action（GitHub自動化）
+
+このプロジェクトには、Claude Code を使ったGitHub自動化が組み込まれています。
+
+### 機能一覧
+
+| 機能                  | トリガー              | 説明                                            |
+| --------------------- | --------------------- | ----------------------------------------------- |
+| Issue → PR 自動実装   | `claude-ready` ラベル | Issueの内容を分析し、コードを実装してPRを作成   |
+| @claude メンション    | コメントで `@claude`  | 質問への回答、コード実装、レビュー依頼など      |
+| PR 自動コードレビュー | PR作成・更新時        | CLAUDE.md準拠、型安全性、i18n対応などをチェック |
+
+### 使い方
+
+#### Issue から自動でPRを作成
+
+1. Issueを作成（実装してほしい内容を詳しく記述）
+2. `claude-ready` ラベルを付与
+3. Claudeが自動でブランチを作成し、実装してPRを提出
+
+#### コメントでClaudeに依頼
+
+IssueやPRのコメントで `@claude` とメンションすると、Claudeが応答します：
+
+```
+@claude このエラーの原因を調べてください
+@claude テストを追加してください
+@claude コードレビューをお願いします
+```
+
+### セットアップ
+
+1. [Anthropic Console](https://console.anthropic.com/) でAPIキーを取得
+2. リポジトリの Settings → Secrets → Actions に `ANTHROPIC_API_KEY` を追加
+3. ワークフローは既に設定済み（追加設定不要）
+
+詳細:
+[anthropics/claude-code-action](https://github.com/anthropics/claude-code-action)
 
 ## デプロイ手順
 

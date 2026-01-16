@@ -1,0 +1,52 @@
+name: Claude PR Review
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+  pull_request_review_comment:
+    types:
+      - created
+
+jobs:
+  review:
+    # PR作成・更新時、または @claude メンションがあった場合に実行
+    if: |
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # pull_request_review_comment の場合はPRのHEADをチェックアウト
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Claude Code Action
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          trigger_phrase: "@claude"
+          prompt: |
+            このPRをレビューしてください。
+
+            ## レビュー観点
+            1. **CLAUDE.md準拠**: プロジェクトのコーディング規約に従っているか
+            2. **型安全性**: TypeScriptの型が適切に定義されているか
+            3. **エラーハンドリング**: 例外処理が適切に実装されているか
+            4. **i18n対応**: ユーザー向けメッセージが多言語化されているか
+            5. **テスト**: 新機能にテストが追加されているか
+            6. **セキュリティ**: 脆弱性がないか
+
+            ## 出力形式
+            - 問題がある場合は具体的な修正案を提示してください
+            - 良い点があればコメントしてください
+            - 全体的な評価を最後にまとめてください
+          include_fix_links: true
