@@ -8,13 +8,18 @@ on:
   pull_request_review_comment:
     types:
       - created
+  issue_comment:
+    types:
+      - created
 
 jobs:
   review:
     # PR作成・更新時、または @claude メンションがあった場合に実行
+    # Note: PRへの通常コメントは issue_comment イベントで発火（pull_request != null で判定）
     if: |
       (github.event_name == 'pull_request') ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude'))
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude') && github.event.issue.pull_request != null)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -22,12 +27,22 @@ jobs:
       issues: write
       id-token: write
     steps:
+      - name: Get PR head SHA (for issue_comment)
+        id: get-pr-sha
+        if: github.event_name == 'issue_comment'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_URL="${{ github.event.issue.pull_request.url }}"
+          PR_SHA=$(gh api "$PR_URL" --jq '.head.sha')
+          echo "sha=$PR_SHA" >> "$GITHUB_OUTPUT"
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          # pull_request_review_comment の場合はPRのHEADをチェックアウト
-          ref: ${{ github.event.pull_request.head.sha }}
+          # PRのHEADをチェックアウト（イベントタイプに応じて取得方法が異なる）
+          ref: ${{ github.event.pull_request.head.sha || steps.get-pr-sha.outputs.sha || github.ref }}
 
       - name: Claude Code Action
         uses: anthropics/claude-code-action@v1
