@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.0](https://github.com/leaveanest/slack-utils/compare/v1.7.0...v1.8.0) (2026-01-16)
+
+
+### Features
+
+* add Claude Code Action for GitHub automation ([62694d2](https://github.com/leaveanest/slack-utils/commit/62694d2b9c0478ca17a9bb3167540a19bfddd6d8))
+
+
+### Bug Fixes
+
+* improve Claude Code Action workflow triggers ([55f464f](https://github.com/leaveanest/slack-utils/commit/55f464f46a08735d768d90af60357da65719a11a))
+
 ## [1.7.0](https://github.com/leaveanest/slack-utils/compare/v1.6.0...v1.7.0) (2025-10-30)
 
 
