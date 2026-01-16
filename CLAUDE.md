@@ -273,12 +273,6 @@ t("messages.channel_summary", {
 - ❌ 変数名、関数名
 - ❌ デバッグ用の一時的な出力
 
-### 自動翻訳
-
-- `locales/en.json`を更新してpushすると**自動的に日本語翻訳が生成**されます
-- GitHub Actionsが`locales/ja.json`を更新してPRを作成
-- Anthropic Claude Haiku 4.5を使用
-
 詳細: `docs/i18n-guide.md`
 
 ## 🔄 開発ワークフロー
@@ -338,7 +332,6 @@ deno task lint
 deno task test
 
 # I18n関連
-deno task i18n:translate  # 自動翻訳実行
 deno task i18n:check      # 整合性チェック
 deno task i18n:test       # I18nテスト
 
@@ -363,7 +356,6 @@ deno task cursor-ci
 
 ### CI/CDでの注意
 
-- **OPENAI_API_KEY**: 既に設定済み（自動翻訳用）
 - **Denoバージョン**: v2.x を使用
 - **ロックファイル**: `deno.lock` v5形式
 

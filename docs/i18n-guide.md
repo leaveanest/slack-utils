@@ -9,7 +9,6 @@ Internationalization）の使い方を説明します。
 - [サポート言語](#サポート言語)
 - [基本的な使い方](#基本的な使い方)
 - [新しいメッセージの追加](#新しいメッセージの追加)
-- [自動翻訳ワークフロー](#自動翻訳ワークフロー)
 - [整合性チェック](#整合性チェック)
 - [テスト](#テスト)
 - [トラブルシューティング](#トラブルシューティング)
@@ -20,7 +19,6 @@ Internationalization）の使い方を説明します。
 
 - **JSON形式の翻訳ファイル**: `locales/`
   ディレクトリに言語ごとのJSONファイルを配置
-- **自動翻訳**: GitHub ActionsとAnthropic Claude APIを使った日本語への自動翻訳
 - **整合性チェック**: CI/CDで翻訳漏れやプレースホルダーの不一致を自動検出
 - **型安全な翻訳関数**: TypeScriptで型安全にメッセージを取得
 
@@ -29,7 +27,7 @@ Internationalization）の使い方を説明します。
 現在サポートされている言語：
 
 - **English (en)** - ベース言語
-- **日本語 (ja)** - 自動翻訳
+- **日本語 (ja)**
 
 ## 基本的な使い方
 
@@ -92,28 +90,30 @@ export LANG=en_US.UTF-8
 {
   "errors": {
     "channel_not_found": "Failed to load channel info: {error}",
-    "user_not_found": "User not found: {userId}" // 新規追加
+    "user_not_found": "User not found: {userId}"
   }
 }
 ```
 
-### 2. コードで使用
+### 2. 日本語メッセージを追加
+
+`locales/ja.json` に対応する日本語メッセージを追加します：
+
+```json
+{
+  "errors": {
+    "channel_not_found": "チャンネル情報の読み込みに失敗しました: {error}",
+    "user_not_found": "ユーザーが見つかりません: {userId}"
+  }
+}
+```
+
+### 3. コードで使用
 
 ```typescript
 import { t } from "../../lib/i18n/mod.ts";
 
 throw new Error(t("errors.user_not_found", { userId: "U12345" }));
-```
-
-### 3. 自動翻訳を実行
-
-`locales/en.json` をコミットしてプッシュすると、GitHub
-Actionsが自動的に日本語翻訳を生成してPRを作成します。
-
-または、手動で実行：
-
-```bash
-deno run --allow-env --allow-read --allow-write --allow-net scripts/translate.ts
 ```
 
 ### プレースホルダーの使用
@@ -134,45 +134,6 @@ deno run --allow-env --allow-read --allow-write --allow-net scripts/translate.ts
 - プレースホルダー名は英数字のみ（アンダースコアも使用可）
 - 翻訳時にプレースホルダーは保持されます
 - コードで渡すパラメータ名と一致させる必要があります
-
-## 自動翻訳ワークフロー
-
-### トリガー条件
-
-GitHub Actionsの自動翻訳は以下の場合に実行されます：
-
-1. **`locales/en.json` が更新されたとき**（mainブランチへのpush）
-2. **手動実行**（workflow_dispatch）
-
-### ワークフローの動作
-
-1. `locales/en.json` を読み込み
-2. Anthropic Claude API (Claude Haiku 4.5) で日本語に翻訳
-3. `locales/ja.json` を更新
-4. 変更があればPRを自動作成
-
-### 手動実行
-
-GitHub Actionsのページから手動実行できます：
-
-1. GitHubリポジトリの「Actions」タブを開く
-2. 「I18n Auto Translation」ワークフローを選択
-3. 「Run workflow」をクリック
-
-### PRのレビュー
-
-自動作成されたPRには以下が含まれます：
-
-- 翻訳された `locales/ja.json` の変更
-- 自動生成された説明文
-- レビューチェックリスト
-
-**レビュー時の確認事項：**
-
-- [ ] 翻訳の正確性
-- [ ] 自然な日本語表現
-- [ ] 技術用語の適切な翻訳
-- [ ] プレースホルダーが正しく保持されているか
 
 ## 整合性チェック
 
@@ -207,7 +168,7 @@ deno run --allow-read lib/i18n/check.ts
 
 ### チェック結果の例
 
-```
+```text
 🔍 Checking i18n integrity...
 
 📊 Statistics:
@@ -220,7 +181,7 @@ deno run --allow-read lib/i18n/check.ts
 
 エラーがある場合：
 
-```
+```text
 ❌ Errors:
    - Missing translation in ja.json: "errors.user_not_found"
    - Missing placeholder {userId} in ja.json for key "errors.user_not_found"
@@ -309,22 +270,6 @@ Deno.test("新しいエラーメッセージが翻訳される", async () => {
    t("messages.greeting", { name: "Alice" });
    ```
 
-### 自動翻訳が動作しない
-
-**原因と対処:**
-
-1. **ANTHROPIC_API_KEYが設定されていない**
-   - GitHubリポジトリの Settings → Secrets → Actions で確認
-   - シークレット名: `ANTHROPIC_API_KEY`
-
-2. **トリガー条件を満たしていない**
-   - `locales/en.json` を変更してmainブランチにpush
-   - または手動実行
-
-3. **API制限**
-   - Anthropic Claude APIのレート制限に達した可能性
-   - 少し待ってから再実行
-
 ### 整合性チェックに失敗する
 
 **原因と対処:**
@@ -335,7 +280,7 @@ Deno.test("新しいエラーメッセージが翻訳される", async () => {
    # エラー: Missing translation in ja.json: "errors.new_error"
    ```
 
-   - 自動翻訳を実行するか、手動で `ja.json` に追加
+   - 手動で `ja.json` に翻訳を追加
 
 2. **プレースホルダー不一致**
 
@@ -370,15 +315,15 @@ deno test --allow-all --filter="翻訳を取得" lib/i18n/test.ts
 ```json
 {
   "errors": {
-    "api_error": "...", // エラーメッセージ
+    "api_error": "...",
     "validation_failed": "..."
   },
   "messages": {
-    "success": "...", // ユーザー向けメッセージ
+    "success": "...",
     "processing": "..."
   },
   "logs": {
-    "starting": "...", // ログメッセージ
+    "starting": "...",
     "completed": "..."
   }
 }
@@ -388,10 +333,10 @@ deno test --allow-all --filter="翻訳を取得" lib/i18n/test.ts
 
 ```typescript
 // ✅ 良い例: 動的な値はプレースホルダーで
-t("messages.user_count", { count: users.length })
+t("messages.user_count", { count: users.length });
 
-  // ❌ 悪い例: 文字列結合
-  `Users: ${users.length}`;
+// ❌ 悪い例: 文字列結合
+`Users: ${users.length}`;
 ```
 
 ### 3. 文脈を考慮した翻訳
@@ -426,7 +371,6 @@ deno fmt locales/
 ## 参考リソース
 
 - [Denoドキュメント](https://deno.land/manual)
-- [Anthropic Claude API](https://docs.anthropic.com/claude/reference)
 - [GitHub Actions](https://docs.github.com/actions)
 - [プロジェクトのテストガイド](./testing-guide.md)
 
