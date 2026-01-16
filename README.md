@@ -163,7 +163,7 @@ export async function retrieveChannelSummary(
 ### サポート言語
 
 - **English (en)** - ベース言語
-- **日本語 (ja)** - 自動翻訳
+- **日本語 (ja)**
 
 ### 言語の切り替え
 
@@ -190,11 +190,6 @@ const message = t("errors.unknown_error");
 // プレースホルダー付きメッセージ
 const error = t("errors.channel_not_found", { error: "not_found" });
 ```
-
-### 自動翻訳
-
-`locales/en.json` が更新されると、GitHub
-Actionsが自動的に日本語への翻訳を実行し、PRを作成します。
 
 詳細は [`docs/i18n-guide.md`](docs/i18n-guide.md) を参照してください。
 
@@ -462,7 +457,6 @@ Settings → Secrets and variables → Actions
 オプションのシークレット：
 
 - `CODECOV_TOKEN` - コードカバレッジレポート用（プライベートリポジトリの場合）
-- `ANTHROPIC_API_KEY` - i18n自動翻訳用（Claude Haiku 4.5を使用）
 - `NPM_TOKEN` - npm公開用（npmパッケージとして公開する場合）
 - `JSR_TOKEN` - JSR公開用（JSRパッケージとして公開する場合）
 
