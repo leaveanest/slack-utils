@@ -22,7 +22,7 @@ jobs:
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude') && github.event.issue.pull_request != null)
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write # 修正・コミット用に write に変更
       pull-requests: write
       issues: write
       id-token: write
@@ -50,9 +50,9 @@ jobs:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           trigger_phrase: "@claude"
           prompt: |
-            このPRをレビューしてください。
+            このPRをレビューし、問題があれば修正してください。
 
-            **重要**: レビューコメントは全て日本語で記述してください。
+            **重要**: コメント、コミットメッセージは全て日本語で記述してください。
 
             ## Step 1: プロジェクトルールの確認
             まず以下のファイルを読んで、このプロジェクトのルールを理解してください：
@@ -73,9 +73,16 @@ jobs:
             - [ ] **セキュリティ**: 脆弱性がないか（インジェクション、XSSなど）
             - [ ] **パフォーマンス**: 明らかな非効率がないか
 
-            ## Step 3: 出力形式
-            - 問題がある場合は具体的な修正案を提示してください
+            ## Step 3: 問題の修正
+            問題が見つかった場合は、以下の手順で修正してください：
+            1. コードを修正
+            2. `deno task fmt` でフォーマット
+            3. `deno task lint` でリントチェック
+            4. `deno task test` でテスト実行
+            5. 全てパスしたらコミット＆プッシュ
+
+            ## Step 4: 出力形式
             - チェック項目ごとに ✅ または ❌ で結果を示してください
-            - 良い点があればコメントしてください
-            - 全体的な評価を最後にまとめてください
+            - 修正した内容をまとめてください
+            - 修正できなかった問題があれば理由を説明してください
           include_fix_links: true
