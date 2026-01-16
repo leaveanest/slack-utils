@@ -20,7 +20,7 @@ Internationalization）の使い方を説明します。
 
 - **JSON形式の翻訳ファイル**: `locales/`
   ディレクトリに言語ごとのJSONファイルを配置
-- **自動翻訳**: GitHub ActionsとOpenAI APIを使った日本語への自動翻訳
+- **自動翻訳**: GitHub ActionsとAnthropic Claude APIを使った日本語への自動翻訳
 - **整合性チェック**: CI/CDで翻訳漏れやプレースホルダーの不一致を自動検出
 - **型安全な翻訳関数**: TypeScriptで型安全にメッセージを取得
 
@@ -313,16 +313,16 @@ Deno.test("新しいエラーメッセージが翻訳される", async () => {
 
 **原因と対処:**
 
-1. **OPENAI_API_KEYが設定されていない**
+1. **ANTHROPIC_API_KEYが設定されていない**
    - GitHubリポジトリの Settings → Secrets → Actions で確認
-   - シークレット名: `OPENAI_API_KEY`
+   - シークレット名: `ANTHROPIC_API_KEY`
 
 2. **トリガー条件を満たしていない**
    - `locales/en.json` を変更してmainブランチにpush
    - または手動実行
 
 3. **API制限**
-   - OpenAI APIのレート制限に達した可能性
+   - Anthropic Claude APIのレート制限に達した可能性
    - 少し待ってから再実行
 
 ### 整合性チェックに失敗する
@@ -426,7 +426,7 @@ deno fmt locales/
 ## 参考リソース
 
 - [Denoドキュメント](https://deno.land/manual)
-- [OpenAI API](https://platform.openai.com/docs/api-reference)
+- [Anthropic Claude API](https://docs.anthropic.com/claude/reference)
 - [GitHub Actions](https://docs.github.com/actions)
 - [プロジェクトのテストガイド](./testing-guide.md)
 
