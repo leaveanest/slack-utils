@@ -14,7 +14,8 @@
       "channel_id_format": "Channel ID must start with 'C' followed by uppercase alphanumeric characters",
       "user_id_empty": "User ID cannot be empty",
       "user_id_format": "User ID must start with 'U' or 'W' followed by uppercase alphanumeric characters",
-      "value_empty": "Value cannot be empty"
+      "value_empty": "Value cannot be empty",
+      "max_length_invalid": "maxLength must be a positive integer"
     }
   },
   "messages": {

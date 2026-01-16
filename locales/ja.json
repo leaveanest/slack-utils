@@ -14,7 +14,8 @@
       "channel_id_format": "チャンネルIDは 'C' で始まり、大文字の英数字が続く必要があります",
       "user_id_empty": "ユーザーIDを空にすることはできません",
       "user_id_format": "ユーザーIDは 'U' または 'W' で始まり、大文字の英数字が続く必要があります",
-      "value_empty": "値を空にすることはできません"
+      "value_empty": "値を空にすることはできません",
+      "max_length_invalid": "maxLengthは正の整数である必要があります"
     }
   },
   "messages": {
