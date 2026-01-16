@@ -38,6 +38,8 @@ jobs:
           prompt: |
             GitHub Issue #${{ github.event.issue.number }} を実装してください。
 
+            **重要**: コミットメッセージ、PRタイトル、PR本文は全て日本語で記述してください。
+
             ## Issue情報
             **タイトル**: ${{ github.event.issue.title }}
 
