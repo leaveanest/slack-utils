@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.9.0](https://github.com/leaveanest/slack-utils/compare/v1.8.0...v1.9.0) (2026-01-16)
+
+
+### Features
+
+* PRレビューワークフローで修正・コミットを可能に ([35a3d01](https://github.com/leaveanest/slack-utils/commit/35a3d0126c50646b9d724048d08fdd79bee4d4ee))
+
+
+### Bug Fixes
+
+* enhance Claude Code Action prompts for better quality ([d8bcb48](https://github.com/leaveanest/slack-utils/commit/d8bcb4833871df0491c7e2ba5a824513c15b59d0))
+* PRとレビューコメントを日本語で出力するよう指示を追加 ([b002d86](https://github.com/leaveanest/slack-utils/commit/b002d86934e86b4a1172eed1b371ac77265a61f9))
+* PRの通常コメントでも[@claude](https://github.com/claude)が動作するよう修正 ([c4fa348](https://github.com/leaveanest/slack-utils/commit/c4fa348c82eec316813a31f95ffed4e4357ca602))
+
 ## [1.8.0](https://github.com/leaveanest/slack-utils/compare/v1.7.0...v1.8.0) (2026-01-16)
 
 
