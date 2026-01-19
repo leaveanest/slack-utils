@@ -49,6 +49,8 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           trigger_phrase: "@claude"
+          claude_args: |
+            --allowedTools "Bash(deno:*),Bash(deno task:*),Bash(git:*)"
           prompt: |
             このPRをレビューし、問題があれば修正してください。
 
