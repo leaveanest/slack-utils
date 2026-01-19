@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/leaveanest/slack-utils/compare/v1.9.0...v1.9.1) (2026-01-19)
+
+
+### Bug Fixes
+
+* Slack通知からハードコードされたチャンネル名を削除 ([#51](https://github.com/leaveanest/slack-utils/issues/51)) ([2a8ab6c](https://github.com/leaveanest/slack-utils/commit/2a8ab6cef8b5f7e89fafc08ae9b5a105b50b3c7b))
+
 ## [1.9.0](https://github.com/leaveanest/slack-utils/compare/v1.8.0...v1.9.0) (2026-01-16)
 
 
