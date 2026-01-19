@@ -35,6 +35,8 @@ jobs:
           trigger_phrase: "@claude"
           label_trigger: "claude-ready"
           branch_prefix: "claude/"
+          claude_args: |
+            --allowedTools "Bash(deno:*),Bash(git:*)"
           prompt: |
             GitHub Issue #${{ github.event.issue.number }} を実装してください。
 
