@@ -44,7 +44,6 @@ jobs:
         if: steps.guard.outputs.enabled == 'true'
         id: compose
         env:
-          CHANNEL: "#05-miyazawa"
           USERNAME: "slack-utils Bot"
           ICON_EMOJI: ":robot_face:"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -90,7 +89,6 @@ jobs:
               esac
 
               PAYLOAD=$(jq -nc \
-                --arg channel "$CHANNEL" \
                 --arg username "$USERNAME" \
                 --arg icon "$ICON_EMOJI" \
                 --arg emoji "$EMOJI" \
@@ -103,7 +101,6 @@ jobs:
                 --arg assignees "$ASSIGNEES" \
                 --arg color "$COLOR" \
                 '{
-                  channel: $channel,
                   username: $username,
                   icon_emoji: $icon,
                   text: ($emoji + " " + $text),
@@ -157,7 +154,6 @@ jobs:
               fi
 
               PAYLOAD=$(jq -nc \
-                --arg channel "$CHANNEL" \
                 --arg username "$USERNAME" \
                 --arg icon "$ICON_EMOJI" \
                 --arg emoji "$EMOJI" \
@@ -174,7 +170,6 @@ jobs:
                 --arg reviewers "$REVIEWERS" \
                 --arg color "$COLOR" \
                 '{
-                  channel: $channel,
                   username: $username,
                   icon_emoji: $icon,
                   text: ($emoji + " " + $text),
@@ -216,7 +211,6 @@ jobs:
                 fi
 
                 PAYLOAD=$(jq -nc \
-                  --arg channel "$CHANNEL" \
                   --arg username "$USERNAME" \
                   --arg icon "$ICON_EMOJI" \
                   --arg emoji "$EMOJI" \
@@ -227,7 +221,6 @@ jobs:
                   --arg body "$BODY" \
                   --arg color "$COLOR" \
                   '{
-                    channel: $channel,
                     username: $username,
                     icon_emoji: $icon,
                     text: ($emoji + " " + $text),
@@ -336,7 +329,6 @@ jobs:
 
               # ペイロード作成
               PAYLOAD=$(jq -nc \
-                --arg channel "$CHANNEL" \
                 --arg username "$USERNAME" \
                 --arg icon "$ICON_EMOJI" \
                 --arg emoji "$EMOJI" \
@@ -355,7 +347,6 @@ jobs:
                 --arg failed_jobs "$FAILED_JOBS" \
                 --arg color "$COLOR" \
                 '{
-                  channel: $channel,
                   username: $username,
                   icon_emoji: $icon,
                   text: ($emoji + " " + $text),
