@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.3](https://github.com/leaveanest/slack-utils/compare/v1.9.2...v1.9.3) (2026-04-10)
+
+
+### Bug Fixes
+
+* Welcome workflow input names for first-interaction v3 ([661f9c1](https://github.com/leaveanest/slack-utils/commit/661f9c1c1af87d75544bd45c2d2a3c8b6cd7059e))
+* welcome.ymlのインプット名をfirst-interaction v3形式に修正 ([2fe7163](https://github.com/leaveanest/slack-utils/commit/2fe7163c7ce404f3b9077043a376c4cf2da51276))
+
 ## [1.9.2](https://github.com/leaveanest/slack-utils/compare/v1.9.1...v1.9.2) (2026-04-10)
 
 
