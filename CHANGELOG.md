@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.2](https://github.com/leaveanest/slack-utils/compare/v1.9.1...v1.9.2) (2026-04-10)
+
+
+### Bug Fixes
+
+* i18n自動翻訳の変更検出を複数コミットのpushに対応 ([ee436a6](https://github.com/leaveanest/slack-utils/commit/ee436a60459524891200abe0d7636f161ab80b0d))
+
 ## [1.9.1](https://github.com/leaveanest/slack-utils/compare/v1.9.0...v1.9.1) (2026-01-19)
 
 
