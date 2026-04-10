@@ -3,19 +3,20 @@
 プロジェクト内の GitHub Actions
 ワークフローを以下に整理しました。トリガーと主目的をまず表形式でまとめ、続いて詳細を記載しています。
 
-| ファイル                                 | ワークフロー名           | 主なトリガー                                                   | 主な役割                                                            |
-| ---------------------------------------- | ------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------- |
-| `.github/workflows/ci.yml`               | CI                       | `push`(main), `pull_request`(main)                             | Deno プロジェクトのフォーマット、Lint、型チェック、テストを実行     |
-| `.github/workflows/deno-ci.yml`          | Deno CI                  | `push`(main), `pull_request`                                   | 複数 OS での Deno テスト、カバレッジ収集と Codecov 連携             |
-| `.github/workflows/release.yml`          | Release                  | `push`(main)                                                   | release-please によるリリース生成、npm/JSR 公開、リリースノート更新 |
-| `.github/workflows/security.yml`         | Security Scan            | `push`(main), `pull_request`, `schedule`(毎週月曜)             | TruffleHog と Trivy による秘密情報・脆弱性スキャン                  |
-| `.github/workflows/slack-notify.yml`     | Slack Notifications      | `issues`, `pull_request`, `release`, `workflow_run`            | Issue/PR/Release/CI 完了時に Slack へ通知                           |
-| `.github/workflows/pr-size.yml`          | PR Size Check            | `pull_request`                                                 | 変更行数に応じた PR ラベル付与                                      |
-| `.github/workflows/issue-automation.yml` | Issue Automation         | `issues`(labeled)                                              | ラベル付与時にコメント・ラベル整備（※将来実装予定）                 |
-| `.github/workflows/welcome.yml`          | Welcome New Contributors | `issues`(opened), `pull_request_target`(opened)                | 初回投稿者への歓迎メッセージ送信                                    |
-| `.github/workflows/issue-to-pr.yml`      | Issue to PR with Claude  | `issues`(labeled/assigned), `issue_comment`                    | `claude-ready`ラベル or `@claude`メンションでIssueを自動実装        |
-| `.github/workflows/claude-pr-review.yml` | Claude PR Review         | `pull_request`, `pull_request_review_comment`, `issue_comment` | PR自動レビュー、`@claude`メンションで質問・修正依頼に対応           |
-| `.github/workflows/i18n-check.yml`       | I18n Check               | `pull_request`                                                 | locales/配下の翻訳キー整合性チェック                                |
+| ファイル                                    | ワークフロー名           | 主なトリガー                                                   | 主な役割                                                            |
+| ------------------------------------------- | ------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `.github/workflows/ci.yml`                  | CI                       | `push`(main), `pull_request`(main)                             | Deno プロジェクトのフォーマット、Lint、型チェック、テストを実行     |
+| `.github/workflows/deno-ci.yml`             | Deno CI                  | `push`(main), `pull_request`                                   | 複数 OS での Deno テスト、カバレッジ収集と Codecov 連携             |
+| `.github/workflows/release.yml`             | Release                  | `push`(main)                                                   | release-please によるリリース生成、npm/JSR 公開、リリースノート更新 |
+| `.github/workflows/security.yml`            | Security Scan            | `push`(main), `pull_request`, `schedule`(毎週月曜)             | TruffleHog と Trivy による秘密情報・脆弱性スキャン                  |
+| `.github/workflows/slack-notify.yml`        | Slack Notifications      | `issues`, `pull_request`, `release`, `workflow_run`            | Issue/PR/Release/CI 完了時に Slack へ通知                           |
+| `.github/workflows/pr-size.yml`             | PR Size Check            | `pull_request`                                                 | 変更行数に応じた PR ラベル付与                                      |
+| `.github/workflows/issue-automation.yml`    | Issue Automation         | `issues`(labeled)                                              | ラベル付与時にコメント・ラベル整備（※将来実装予定）                 |
+| `.github/workflows/welcome.yml`             | Welcome New Contributors | `issues`(opened), `pull_request_target`(opened)                | 初回投稿者への歓迎メッセージ送信                                    |
+| `.github/workflows/issue-to-pr.yml`         | Issue to PR with Claude  | `issues`(labeled/assigned), `issue_comment`                    | `claude-ready`ラベル or `@claude`メンションでIssueを自動実装        |
+| `.github/workflows/claude-pr-review.yml`    | Claude PR Review         | `pull_request`, `pull_request_review_comment`, `issue_comment` | PR自動レビュー、`@claude`メンションで質問・修正依頼に対応           |
+| `.github/workflows/i18n-check.yml`          | I18n Check               | `pull_request`                                                 | locales/配下の翻訳キー整合性チェック                                |
+| `.github/workflows/i18n-auto-translate.yml` | I18n Auto Translation    | `push`(main, locales/en.json変更時), `workflow_dispatch`       | en.json変更時にClaude APIで日本語翻訳を自動生成しPR作成             |
 
 ## 各ワークフローの詳細
 
@@ -134,6 +135,17 @@ PR に対する自動レビューと、`@claude` メンションへの応答を�
 
 - `ANTHROPIC_API_KEY` シークレットが必要
 - `contents: write` 権限が必要（修正・コミット用）
+
+### I18n Auto Translation (`.github/workflows/i18n-auto-translate.yml`)
+
+- `locales/en.json` が変更されると、Anthropic Claude API (Haiku 4.5)
+  を使用して自動的に日本語翻訳を生成します。
+- 翻訳結果は `peter-evans/create-pull-request` により自動的に PR
+  として作成されます。
+- `workflow_dispatch` による手動トリガーにも対応しており、`force`
+  オプションで変更がなくても翻訳を実行できます。
+- プレースホルダー（`{name}`, `{error}` 等）は保持されます。
+- `ANTHROPIC_API_KEY` シークレットが必要です。
 
 ### I18n Check (`.github/workflows/i18n-check.yml`)
 
