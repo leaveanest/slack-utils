@@ -35,7 +35,7 @@
 
 ### Release (`.github/workflows/release.yml`)
 
-- `google-github-actions/release-please-action`
+- `googleapis/release-please-action`
   を用いてタグ生成とリリースノート作成を自動化します。
 - 条件付きで Node.js / Deno をセットアップし、npm・JSR 公開、Semantic Release
   ベースの多言語リリースノート生成、リリースアセットの ZIP
