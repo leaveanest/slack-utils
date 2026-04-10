@@ -39,7 +39,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.force }}" = "true" ]; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Force translation requested"
-          elif git diff HEAD^ HEAD --name-only | grep -q "locales/en.json"; then
+          elif git diff "${{ github.event.before }}" "${{ github.sha }}" --name-only | grep -q "locales/en.json"; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "Changes detected in locales/en.json"
           else
