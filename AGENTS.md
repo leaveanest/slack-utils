@@ -103,7 +103,9 @@ mcp_Context7_get - library - docs({
 
 ### Slack Connector Functions
 
-外部SaaS連携をSlack Workflowに追加する場合は、カスタムOAuth実装や独自APIクライアントを作る前に、公式Slack Platform connector functionの採用可否を確認してください。
+外部SaaS連携をSlack
+Workflowに追加する場合は、カスタムOAuth実装や独自APIクライアントを作る前に、公式Slack
+Platform connector functionの採用可否を確認してください。
 
 **使用するスキル:**
 
@@ -111,13 +113,17 @@ mcp_Context7_get - library - docs({
 
 **確認するシーン:**
 
-- Google Sheets、Microsoft Excel、GitHub、Jira、Linear、Salesforce、Zendesk、PagerDuty、ServiceNow、Asana、Notionなど外部サービスをWorkflow stepから操作したい
+- Google Sheets、Microsoft
+  Excel、GitHub、Jira、Linear、Salesforce、Zendesk、PagerDuty、ServiceNow、Asana、Notionなど外部サービスをWorkflow
+  stepから操作したい
 - レコード作成・更新・取得、メール/SMS送信、会議作成、issue/task/incident作成などを行いたい
-- OAuth、token storage、refresh処理、外部API認証をこのリポジトリ側で実装したくない
+- OAuth、token
+  storage、refresh処理、外部API認証をこのリポジトリ側で実装したくない
 
 **注意:**
 
-- connector catalogにない操作、複雑なAPI制御、独自認証が必要な場合はCustom Functionを検討する
+- connector catalogにない操作、複雑なAPI制御、独自認証が必要な場合はCustom
+  Functionを検討する
 - Slack Connect外部ユーザー向けWorkflowではconnector functionの制約を確認する
 - 破壊的操作、金銭、契約、採用、本番運用、顧客データに関わる操作は確認・承認ステップを設ける
 
