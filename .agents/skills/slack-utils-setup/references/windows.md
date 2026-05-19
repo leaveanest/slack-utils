@@ -11,13 +11,14 @@ Slack desktop app.
 2. Install Git for Windows so Git Bash is available for repo hooks.
 3. Install PowerShell 7 for Slack's Windows installer.
 4. Install mise.
-5. Configure mise activation or shims for PowerShell.
-6. Install Deno 2.x through the repository `.mise.toml`.
-7. Open a new PowerShell 7 terminal.
-8. Install Slack CLI with Slack's official Windows installer.
-9. Install optional tools if needed.
-10. Authenticate Slack.
-11. Set up and validate the repository.
+5. Open a new PowerShell 7 terminal.
+6. Configure mise activation or shims for PowerShell 7.
+7. Restart PowerShell 7 so mise changes are loaded.
+8. Install Deno 2.x through the repository `.mise.toml`.
+9. Install Slack CLI with Slack's official Windows installer.
+10. Install optional tools if needed.
+11. Authenticate Slack.
+12. Set up and validate the repository.
 
 ## Commands
 
@@ -38,24 +39,37 @@ winget install --id Microsoft.PowerShell --exact
 winget install --id jdx.mise --exact
 ```
 
-Configure mise for PowerShell. Prefer activation for interactive shells:
+Open a new PowerShell 7 terminal before continuing. Configure mise for
+PowerShell 7 from that terminal. Prefer activation for interactive shells:
 
 ```powershell
 if (!(Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force }
-Add-Content $PROFILE 'mise activate pwsh | Out-String | Invoke-Expression'
+$activation = 'mise activate pwsh | Out-String | Invoke-Expression'
+if (!(Select-String -Path $PROFILE -SimpleMatch $activation -Quiet)) {
+  Add-Content $PROFILE $activation
+}
 ```
 
 If profile changes are not allowed, add mise shims to the user PATH instead:
 
 ```powershell
-[Environment]::SetEnvironmentVariable(
-  "Path",
-  [Environment]::GetEnvironmentVariable("Path", "User") + ";$env:LOCALAPPDATA\mise\shims",
-  "User"
-)
+$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
+$miseShims = "$env:LOCALAPPDATA\mise\shims"
+if (($userPath -split ";") -notcontains $miseShims) {
+  $newUserPath = if ([string]::IsNullOrEmpty($userPath)) {
+    $miseShims
+  } else {
+    $userPath + ";" + $miseShims
+  }
+  [Environment]::SetEnvironmentVariable(
+    "Path",
+    $newUserPath,
+    "User"
+  )
+}
 ```
 
-Open a new PowerShell 7 terminal so PATH and mise activation changes are loaded.
+Restart PowerShell 7 so PATH and mise activation changes are loaded.
 
 Install Deno with mise:
 
@@ -68,10 +82,11 @@ Install Slack CLI with Slack's official Windows installer:
 
 ```powershell
 irm https://downloads.slack-edge.com/slack-cli/install-windows.ps1 -outfile install-windows.ps1
-.\install-windows.ps1 -SkipGit $true
+.\install-windows.ps1 -SkipGit $true -SkipDeno $true
 ```
 
-Use `-SkipGit $true` because Git was installed explicitly with winget. If the
+Use `-SkipGit $true` because Git was installed explicitly with winget. Use
+`-SkipDeno $true` because Deno is managed by mise for this repository. If the
 user needs an alias because another `slack` command is already on PATH, download
 the installer first and pass `-Alias <name>`.
 
@@ -101,7 +116,7 @@ slack login
 Set up the repository:
 
 ```powershell
-Copy-Item .env.example .env
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
 bash scripts/setup-git-hooks.sh
 deno task cursor-ci
 ```

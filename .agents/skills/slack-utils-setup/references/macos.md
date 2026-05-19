@@ -58,7 +58,7 @@ slack login
 Set up the repository:
 
 ```bash
-cp .env.example .env
+[ -f .env ] || cp .env.example .env
 bash scripts/setup-git-hooks.sh
 deno task cursor-ci
 ```
