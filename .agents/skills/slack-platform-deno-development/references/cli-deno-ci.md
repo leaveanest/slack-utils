@@ -24,11 +24,26 @@ validation, hooks, and CI updates.
 - Deno permissions: https://docs.deno.com/runtime/manual/getting_started/permissions
 - Deno test/check/fmt/lint/task references: https://docs.deno.com/runtime/reference/cli/
 
+## Deno Version Source
+
+Use the repository `.mise.toml` as the Deno version source when it is present.
+PR #69 introduced this project pin:
+
+```toml
+[tools]
+deno = "2"
+```
+
+Prefer `mise install` / `mise exec -- deno ...` when `deno` is not already on
+PATH or when validating against the project-pinned Deno 2 toolchain.
+
 ## Command Table
 
 | Phase | Purpose | Command |
 |---|---|---|
 | Install | Check CLI | `slack version` |
+| Install | Install pinned Deno | `mise trust`, `mise install` |
+| Install | Check Deno | `deno --version` or `mise exec -- deno --version` |
 | Install | Windows install | `irm https://downloads.slack-edge.com/slack-cli/install-windows.ps1 | iex` |
 | Auth | Login/list auth | `slack login`, `slack auth list` |
 | Local | Run app | `slack run` |
@@ -56,6 +71,8 @@ validation, hooks, and CI updates.
 - `deno.jsonc` currently has `dev` as `slack run workflows/example_workflow`.
   Current Slack CLI v4 docs usually point to running from the app root with
   `slack run`; review before relying on this task.
+- `.mise.toml`, when present, pins Deno with `deno = "2"`. Keep CI/docs aligned
+  with that project pin instead of introducing another Deno version string.
 - `deno.jsonc` `check` currently covers only `manifest.ts` and one workflow.
   Prefer checking `manifest.ts`, `functions/**/*.ts`, `workflows/**/*.ts`,
   `triggers/**/*.ts`, and `lib/**/*.ts`.
@@ -76,6 +93,16 @@ deno lint
 deno task check
 deno task test
 deno task i18n:check
+```
+
+If `deno` is missing from PATH, use the mise-managed Deno 2 toolchain:
+
+```bash
+mise exec -- deno fmt --check
+mise exec -- deno lint
+mise exec -- deno task check
+mise exec -- deno task test
+mise exec -- deno task i18n:check
 ```
 
 For read-only Slack CLI validation, run only when Slack CLI and auth are

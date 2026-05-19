@@ -14,7 +14,8 @@ rules, and validate with Deno/Slack CLI checks.
 
 This skill is project-scoped. It assumes the repo structure in `slack-utils`:
 `manifest.ts`, `functions/`, `workflows/`, `triggers/`, `lib/`, `locales/`,
-`docs/`, `deno.jsonc`, `import_map.json`, and `slack.json`.
+`docs/`, `deno.jsonc`, `import_map.json`, `.mise.toml` when present, and
+`slack.json`.
 
 ## When Not To Use
 
@@ -74,8 +75,10 @@ This skill is project-scoped. It assumes the repo structure in `slack-utils`:
    - User-facing strings, errors, logs, Slack text, and fallback text use i18n.
    - Inputs and external data are validated with Zod schemas from `lib/validation`.
 6. Validate proportionally:
-   - Run `deno fmt --check`, `deno lint`, `deno task check`, `deno task test`, and
-     `deno task i18n:check` when code changes are made.
+   - Run `deno fmt --check`, `deno lint`, `deno task check`, `deno task test`,
+     and `deno task i18n:check` when code changes are made. If Deno is managed
+     by mise or is not on PATH, run the same commands through the repository's
+     `.mise.toml` toolchain, for example `mise exec -- deno task test`.
    - For read-only Slack CLI validation, prefer `slack manifest validate` when
      the CLI is installed and credentials exist.
    - Run stateful Slack CLI commands such as `slack run`,

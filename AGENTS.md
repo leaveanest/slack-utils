@@ -91,6 +91,7 @@ mcp_Context7_get - library - docs({
 ### Deno (v2.x)
 
 - 公式ドキュメント: `/websites/deno`
+- バージョン管理: `.mise.toml` がある場合は `deno = "2"` を基準にする
 - セキュアなランタイム
 - TypeScript標準サポート
 - 組み込みテストランナー
