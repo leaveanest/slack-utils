@@ -41,124 +41,32 @@ Install these when useful:
 - GitHub CLI for GitHub PR and issue workflows.
 - VS Code or Cursor with the Deno extension for editor support.
 
-## macOS Workflow
+## Workflow
 
-1. Check for Homebrew:
+1. Detect or ask for the target OS.
+2. Load only the matching setup reference:
+   - macOS: `references/macos.md`
+   - Windows: `references/windows.md`
+3. Present the install order before commands when the user is preparing a new
+   machine.
+4. Keep required tools separate from optional tools.
+5. Verify `git`, `deno`, and `slack` after installation.
+6. Run Slack authentication and repository setup only after the tools are
+   installed.
 
-   ```bash
-   brew --version
-   ```
+## OS References
 
-2. Install required packages:
-
-   ```bash
-   brew install git deno
-   brew install --cask slack-cli
-   ```
-
-3. Install optional tools only when needed:
-
-   ```bash
-   brew install node gh
-   brew install --cask visual-studio-code
-   ```
-
-4. Verify commands:
-
-   ```bash
-   git --version
-   deno --version
-   slack version
-   ```
-
-5. Authenticate Slack:
-
-   ```bash
-   slack login
-   ```
-
-6. Set up the repository:
-
-   ```bash
-   cp .env.example .env
-   slack env add local
-   bash scripts/setup-git-hooks.sh
-   deno task cursor-ci
-   ```
-
-## Windows Workflow
-
-Use winget for the dependency tools, then use Slack's official PowerShell
-installer for Slack CLI. Do not install `SlackTechnologies.Slack` as a substitute
-for Slack CLI; that package is the Slack desktop app.
-
-1. Check that winget is available:
-
-   ```powershell
-   winget --version
-   ```
-
-   If winget is missing, update App Installer from Microsoft Store or follow
-   Microsoft's Windows Package Manager installation guidance before continuing.
-
-2. Install required dependency tools with winget:
-
-   ```powershell
-   winget install --id Git.Git --exact
-   winget install --id Microsoft.PowerShell --exact
-   winget install --id DenoLand.Deno --exact
-   ```
-
-3. Open a new PowerShell 7 terminal so PATH changes are loaded before running
-   Slack's installer.
-
-4. Install Slack CLI with Slack's official Windows installer:
-
-   ```powershell
-   irm https://downloads.slack-edge.com/slack-cli/install-windows.ps1 -outfile install-windows.ps1
-   .\install-windows.ps1 -SkipGit $true
-   ```
-
-   Use `-SkipGit $true` because Git was installed explicitly with winget in the
-   previous step. If the user needs an alias because another `slack` command is
-   already on PATH, download the installer first and pass `-Alias <name>`.
-
-5. Install optional tools only when needed:
-
-   ```powershell
-   winget install --id OpenJS.NodeJS.LTS --exact
-   winget install --id GitHub.cli --exact
-   winget install --id Microsoft.VisualStudioCode --exact
-   ```
-
-6. Verify commands:
-
-   ```powershell
-   git --version
-   deno --version
-   slack version
-   ```
-
-7. Authenticate Slack:
-
-   ```powershell
-   slack login
-   ```
-
-8. Set up the repository:
-
-   ```powershell
-   Copy-Item .env.example .env
-   slack env add local
-   bash scripts/setup-git-hooks.sh
-   deno task cursor-ci
-   ```
+- Use `references/macos.md` for Homebrew-based setup.
+- Use `references/windows.md` for winget dependency setup and Slack's official
+  Windows installer.
 
 ## Slack CLI Notes
 
 - On macOS, prefer `brew install --cask slack-cli` when Homebrew is available.
 - On Windows, prefer Slack's official PowerShell installer. Slack CLI requires
   PowerShell for installation on Windows.
+- Do not install `SlackTechnologies.Slack` as a substitute for Slack CLI on
+  Windows; that package is the Slack desktop app.
 - The Slack CLI installer configures the `slack` command, but runtime tools such
   as Deno must be installed separately for Deno Slack SDK projects.
 - Verify installation with `slack version` before running `slack login`.
