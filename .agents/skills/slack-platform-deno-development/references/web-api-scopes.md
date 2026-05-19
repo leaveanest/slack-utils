@@ -6,14 +6,17 @@ errors.
 
 ## Official Sources
 
-- Calling Slack API methods: https://docs.slack.dev/tools/deno-slack-sdk/guides/calling-slack-api-methods/
+- Calling Slack API methods:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/calling-slack-api-methods/
 - Web API methods: https://docs.slack.dev/reference/methods/
 - Pagination: https://docs.slack.dev/apis/web-api/pagination/
 - Rate limits: https://docs.slack.dev/apis/web-api/rate-limits/
 - Tokens: https://docs.slack.dev/authentication/tokens/
 - `chat.postMessage`: https://docs.slack.dev/reference/methods/chat.postMessage/
-- `conversations.info`: https://docs.slack.dev/reference/methods/conversations.info/
-- `conversations.history`: https://docs.slack.dev/reference/methods/conversations.history/
+- `conversations.info`:
+  https://docs.slack.dev/reference/methods/conversations.info/
+- `conversations.history`:
+  https://docs.slack.dev/reference/methods/conversations.history/
 - File upload migration: https://docs.slack.dev/reference/methods/files.upload
 
 ## Calling Pattern
@@ -36,27 +39,27 @@ Always check `ok` and required fields before reading response data.
 
 ## Common Methods
 
-| Method | Scopes | Use | Pitfalls |
-|---|---|---|---|
-| `chat.postMessage` | `chat:write`; maybe `chat:write.public`, `chat:write.customize` | Post messages, DMs, thread replies | Roughly 1 message/sec/channel; include fallback `text`; channel visibility matters |
-| `chat.update` | `chat:write` | Update own messages | Use channel ID, not user ID for DMs; handle interactive message races with app-side state/idempotency. `hash` applies to `views.update`, not `chat.update` |
-| `chat.delete` | `chat:write` | Delete own messages | Bot tokens generally delete bot-authored messages only |
-| `conversations.info` | `channels:read`, `groups:read`, `im:read`, `mpim:read` | Channel/DM metadata | Add `include_num_members: true` when `num_members` is needed |
-| `conversations.history` | `channels:history`, `groups:history`, `im:history`, `mpim:history` | Message history | Cursor pagination; strict newer limits for some non-Marketplace apps |
-| `conversations.replies` | history scopes | Thread replies | Same rate-limit class; `reply_users` can include bot IDs |
-| `conversations.list` | read scopes by conversation type | Conversation discovery | Filter happens after virtual page; keep following `next_cursor` |
-| `conversations.members` | read scopes by conversation type | Member IDs | Cursor pagination required for large channels |
-| `conversations.join` | `channels:join` for bot; `channels:write` for user | Join public channels | Private/archived channels fail; warnings may still accompany success |
-| `conversations.open` | `im:write`, `mpim:write` | Open DM/MPIM | `users` is 1-8 IDs; do not include self |
-| `users.info`, `users.list` | `users:read`; maybe `users:read.email` | User lookup/directory | Pagination; deleted/deactivated users can appear |
-| `usergroups.*` | `usergroups:read`, `usergroups:write` | Usergroup management | Paid-plan/team constraints |
-| `reactions.*` | `reactions:read`, `reactions:write` | Add/get/list/remove reactions | `already_reacted` can be business-success |
-| `files.*` | `files:read`, `files:write`; remote file methods use `remote_files:read`, `remote_files:share`, or `remote_files:write` depending on method | File operations | `files.upload` is deprecated; use external upload flow |
-| `views.*` | Often no OAuth scopes in method docs | Modals/App Home views | `trigger_id` is short-lived; use `hash` for update races; verify App Home support |
-| `pins.*` | `pins:read`, `pins:write` | Pin management | Message needs channel + timestamp |
-| `bookmarks.*` | `bookmarks:read`, `bookmarks:write` | Channel bookmarks | Workflow featured operations can share scopes |
-| `canvases.*` | `canvases:read`, `canvases:write` | Canvas operations | Paid-plan/support constraints; Canvas markdown is not Block Kit |
-| Trigger APIs | `triggers:write` | Runtime trigger management | Static CLI triggers usually do not need app runtime trigger writes |
+| Method                     | Scopes                                                                                                                                      | Use                                | Pitfalls                                                                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chat.postMessage`         | `chat:write`; maybe `chat:write.public`, `chat:write.customize`                                                                             | Post messages, DMs, thread replies | Roughly 1 message/sec/channel; include fallback `text`; channel visibility matters                                                                         |
+| `chat.update`              | `chat:write`                                                                                                                                | Update own messages                | Use channel ID, not user ID for DMs; handle interactive message races with app-side state/idempotency. `hash` applies to `views.update`, not `chat.update` |
+| `chat.delete`              | `chat:write`                                                                                                                                | Delete own messages                | Bot tokens generally delete bot-authored messages only                                                                                                     |
+| `conversations.info`       | `channels:read`, `groups:read`, `im:read`, `mpim:read`                                                                                      | Channel/DM metadata                | Add `include_num_members: true` when `num_members` is needed                                                                                               |
+| `conversations.history`    | `channels:history`, `groups:history`, `im:history`, `mpim:history`                                                                          | Message history                    | Cursor pagination; strict newer limits for some non-Marketplace apps                                                                                       |
+| `conversations.replies`    | history scopes                                                                                                                              | Thread replies                     | Same rate-limit class; `reply_users` can include bot IDs                                                                                                   |
+| `conversations.list`       | read scopes by conversation type                                                                                                            | Conversation discovery             | Filter happens after virtual page; keep following `next_cursor`                                                                                            |
+| `conversations.members`    | read scopes by conversation type                                                                                                            | Member IDs                         | Cursor pagination required for large channels                                                                                                              |
+| `conversations.join`       | `channels:join` for bot; `channels:write` for user                                                                                          | Join public channels               | Private/archived channels fail; warnings may still accompany success                                                                                       |
+| `conversations.open`       | `im:write`, `mpim:write`                                                                                                                    | Open DM/MPIM                       | `users` is 1-8 IDs; do not include self                                                                                                                    |
+| `users.info`, `users.list` | `users:read`; maybe `users:read.email`                                                                                                      | User lookup/directory              | Pagination; deleted/deactivated users can appear                                                                                                           |
+| `usergroups.*`             | `usergroups:read`, `usergroups:write`                                                                                                       | Usergroup management               | Paid-plan/team constraints                                                                                                                                 |
+| `reactions.*`              | `reactions:read`, `reactions:write`                                                                                                         | Add/get/list/remove reactions      | `already_reacted` can be business-success                                                                                                                  |
+| `files.*`                  | `files:read`, `files:write`; remote file methods use `remote_files:read`, `remote_files:share`, or `remote_files:write` depending on method | File operations                    | `files.upload` is deprecated; use external upload flow                                                                                                     |
+| `views.*`                  | Often no OAuth scopes in method docs                                                                                                        | Modals/App Home views              | `trigger_id` is short-lived; use `hash` for update races; verify App Home support                                                                          |
+| `pins.*`                   | `pins:read`, `pins:write`                                                                                                                   | Pin management                     | Message needs channel + timestamp                                                                                                                          |
+| `bookmarks.*`              | `bookmarks:read`, `bookmarks:write`                                                                                                         | Channel bookmarks                  | Workflow featured operations can share scopes                                                                                                              |
+| `canvases.*`               | `canvases:read`, `canvases:write`                                                                                                           | Canvas operations                  | Paid-plan/support constraints; Canvas markdown is not Block Kit                                                                                            |
+| Trigger APIs               | `triggers:write`                                                                                                                            | Runtime trigger management         | Static CLI triggers usually do not need app runtime trigger writes                                                                                         |
 
 ## Pagination
 
@@ -76,10 +79,10 @@ Always check `ok` and required fields before reading response data.
 
 ## Token And Visibility Notes
 
-| Token | Meaning |
-|---|---|
-| Bot token (`xoxb-`) | App/bot-scoped token; visibility depends on scopes and membership |
-| User token (`xoxp-`) | Acts within user's visible/allowed scope |
+| Token                    | Meaning                                                                |
+| ------------------------ | ---------------------------------------------------------------------- |
+| Bot token (`xoxb-`)      | App/bot-scoped token; visibility depends on scopes and membership      |
+| User token (`xoxp-`)     | Acts within user's visible/allowed scope                               |
 | Workflow token (`xwfp-`) | Short-lived workflow token; may borrow visibility in workflow contexts |
 
 Private channels, DMs, MPIMs, Slack Connect, and Enterprise Grid can all change

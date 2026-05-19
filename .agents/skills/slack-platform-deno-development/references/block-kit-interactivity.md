@@ -11,52 +11,55 @@ buttons, selects, slash-command-like entry points, or view handlers.
 - Surfaces: https://docs.slack.dev/surfaces/
 - Modals: https://docs.slack.dev/surfaces/modals/
 - App Home: https://docs.slack.dev/surfaces/app-home/
-- Adding interactivity: https://docs.slack.dev/tools/deno-slack-sdk/guides/adding-interactivity/
-- Creating a form: https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-a-form/
-- Creating an interactive modal: https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-an-interactive-modal/
+- Adding interactivity:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/adding-interactivity/
+- Creating a form:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-a-form/
+- Creating an interactive modal:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-an-interactive-modal/
 - `views.open`: https://docs.slack.dev/reference/methods/views.open/
 - `views.update`: https://docs.slack.dev/reference/methods/views.update/
 - `chat.postMessage`: https://docs.slack.dev/reference/methods/chat.postMessage/
 
 ## Choose The UI Primitive
 
-| Need | Use | Why |
-|---|---|---|
-| Static workflow form | `Schema.slack.functions.OpenForm` | Fastest way to collect inputs and pass them to later workflow steps |
-| Dynamic form or multi-step UI | Block Kit modal with `views.open/update/push` and Deno interactivity handlers | Supports validation, state, loading screens, conditional updates |
-| Simple message action | Block Kit message with buttons/selects | Good for review/approve/ack flows |
-| Long-lived home screen | Usually do not use for this repo's Deno SDK workflow app | Official docs have stated App Home is unavailable for Deno Slack SDK apps; verify before designing |
+| Need                          | Use                                                                           | Why                                                                                                |
+| ----------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Static workflow form          | `Schema.slack.functions.OpenForm`                                             | Fastest way to collect inputs and pass them to later workflow steps                                |
+| Dynamic form or multi-step UI | Block Kit modal with `views.open/update/push` and Deno interactivity handlers | Supports validation, state, loading screens, conditional updates                                   |
+| Simple message action         | Block Kit message with buttons/selects                                        | Good for review/approve/ack flows                                                                  |
+| Long-lived home screen        | Usually do not use for this repo's Deno SDK workflow app                      | Official docs have stated App Home is unavailable for Deno Slack SDK apps; verify before designing |
 
 ## Block Surface Matrix
 
-| Block | Message | Modal | App Home | Notes |
-|---|---|---|---|---|
-| `section` | yes | yes | yes | Text, fields, accessory; common workhorse |
-| `context` | yes | yes | yes | Up to 10 text/image elements |
-| `divider` | yes | yes | yes | Visual separator |
-| `actions` | yes | yes | yes | Up to 25 interactive elements |
-| `input` | no | yes | yes | Form input block; not for messages |
-| `header` | yes | yes | yes | Plain text heading |
-| `image` | yes | yes | yes | Requires alt text |
-| `rich_text` | yes | yes | yes | Often appears from Slack-generated rich text |
-| `video` | yes | yes | yes | Requires appropriate link/embed permissions |
-| `file` | read-only | read-only | read-only | Do not construct directly |
+| Block       | Message   | Modal     | App Home  | Notes                                        |
+| ----------- | --------- | --------- | --------- | -------------------------------------------- |
+| `section`   | yes       | yes       | yes       | Text, fields, accessory; common workhorse    |
+| `context`   | yes       | yes       | yes       | Up to 10 text/image elements                 |
+| `divider`   | yes       | yes       | yes       | Visual separator                             |
+| `actions`   | yes       | yes       | yes       | Up to 25 interactive elements                |
+| `input`     | no        | yes       | yes       | Form input block; not for messages           |
+| `header`    | yes       | yes       | yes       | Plain text heading                           |
+| `image`     | yes       | yes       | yes       | Requires alt text                            |
+| `rich_text` | yes       | yes       | yes       | Often appears from Slack-generated rich text |
+| `video`     | yes       | yes       | yes       | Requires appropriate link/embed permissions  |
+| `file`      | read-only | read-only | read-only | Do not construct directly                    |
 
 Slack limits messages to 50 blocks and modals/Home to 100 blocks. Verify exact
 limits before shipping complex views.
 
 ## Common Elements
 
-| Element | Blocks | Notes |
-|---|---|---|
-| `button` | `section`, `actions` | `url` buttons still produce interaction payloads |
+| Element                                                                                           | Blocks                        | Notes                                                                 |
+| ------------------------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------------------------- |
+| `button`                                                                                          | `section`, `actions`          | `url` buttons still produce interaction payloads                      |
 | `static_select` / `external_select` / `users_select` / `conversations_select` / `channels_select` | `section`, `actions`, `input` | Static options are limited; external selects need suggestion handlers |
-| `multi_*_select` | `section`, `actions`, `input` | Multiple selection variants |
-| `overflow` | `section`, `actions` | Compact secondary actions |
-| `datepicker` / `timepicker` | `section`, `actions`, `input` | Date/time values are strings |
-| `checkboxes` / `radio_buttons` | `section`, `actions`, `input` | Option count limits apply |
-| `plain_text_input` | `input` | Modal/Home only; use for free text |
-| `workflow_button` | `section`, `actions` | Verify support and fit against link triggers before using |
+| `multi_*_select`                                                                                  | `section`, `actions`, `input` | Multiple selection variants                                           |
+| `overflow`                                                                                        | `section`, `actions`          | Compact secondary actions                                             |
+| `datepicker` / `timepicker`                                                                       | `section`, `actions`, `input` | Date/time values are strings                                          |
+| `checkboxes` / `radio_buttons`                                                                    | `section`, `actions`, `input` | Option count limits apply                                             |
+| `plain_text_input`                                                                                | `input`                       | Modal/Home only; use for free text                                    |
+| `workflow_button`                                                                                 | `section`, `actions`          | Verify support and fit against link triggers before using             |
 
 ## Modal Checklist
 
@@ -90,8 +93,8 @@ limits before shipping complex views.
 
 For new interactive work, prefer:
 
-- `functions/<feature>/blocks.ts` for pure Block Kit builders when the payload is
-  non-trivial.
+- `functions/<feature>/blocks.ts` for pure Block Kit builders when the payload
+  is non-trivial.
 - `functions/<feature>/mod.ts` for the function definition and handler.
 - Constants for `callback_id`, `block_id`, and `action_id`.
 - i18n keys for all visible copy, fallback text, and validation messages.

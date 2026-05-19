@@ -5,24 +5,39 @@ validation, hooks, and CI updates.
 
 ## Official Sources
 
-- Slack CLI commands: https://docs.slack.dev/tools/slack-cli/guides/running-slack-cli-commands
-- Windows install: https://docs.slack.dev/tools/slack-cli/guides/installing-the-slack-cli-for-windows/
-- Authorization: https://docs.slack.dev/tools/slack-cli/guides/authorizing-the-slack-cli/
-- `slack run`: https://docs.slack.dev/tools/slack-cli/reference/commands/slack_run/
-- `slack deploy`: https://docs.slack.dev/tools/slack-cli/reference/commands/slack_deploy/
-- `slack activity`: https://docs.slack.dev/tools/slack-cli/reference/commands/slack_activity/
-- `slack env`: https://docs.slack.dev/tools/slack-cli/reference/commands/slack_env/
-- `slack trigger`: https://docs.slack.dev/tools/slack-cli/reference/commands/slack_trigger/
-- `slack datastore`: https://docs.slack.dev/tools/slack-cli/reference/commands/slack_datastore/
-- `slack function access`: https://docs.slack.dev/tools/slack-cli/reference/commands/slack_function_access/
-- `slack docs search`: https://docs.slack.dev/tools/slack-cli/reference/commands/slack_docs_search/
+- Slack CLI commands:
+  https://docs.slack.dev/tools/slack-cli/guides/running-slack-cli-commands
+- Windows install:
+  https://docs.slack.dev/tools/slack-cli/guides/installing-the-slack-cli-for-windows/
+- Authorization:
+  https://docs.slack.dev/tools/slack-cli/guides/authorizing-the-slack-cli/
+- `slack run`:
+  https://docs.slack.dev/tools/slack-cli/reference/commands/slack_run/
+- `slack deploy`:
+  https://docs.slack.dev/tools/slack-cli/reference/commands/slack_deploy/
+- `slack activity`:
+  https://docs.slack.dev/tools/slack-cli/reference/commands/slack_activity/
+- `slack env`:
+  https://docs.slack.dev/tools/slack-cli/reference/commands/slack_env/
+- `slack trigger`:
+  https://docs.slack.dev/tools/slack-cli/reference/commands/slack_trigger/
+- `slack datastore`:
+  https://docs.slack.dev/tools/slack-cli/reference/commands/slack_datastore/
+- `slack function access`:
+  https://docs.slack.dev/tools/slack-cli/reference/commands/slack_function_access/
+- `slack docs search`:
+  https://docs.slack.dev/tools/slack-cli/reference/commands/slack_docs_search/
 - Hooks: https://docs.slack.dev/tools/slack-cli/reference/hooks/
-- Local development: https://docs.slack.dev/tools/slack-cli/guides/developing-locally/
-- GitHub Actions deploy: https://docs.slack.dev/tools/slack-cli/guides/deploying-the-slack-cli-with-github-actions/
+- Local development:
+  https://docs.slack.dev/tools/slack-cli/guides/developing-locally/
+- GitHub Actions deploy:
+  https://docs.slack.dev/tools/slack-cli/guides/deploying-the-slack-cli-with-github-actions/
 - Deno config: https://docs.deno.com/runtime/fundamentals/configuration/
 - Deno modules/import maps: https://docs.deno.com/runtime/fundamentals/modules/
-- Deno permissions: https://docs.deno.com/runtime/manual/getting_started/permissions
-- Deno test/check/fmt/lint/task references: https://docs.deno.com/runtime/reference/cli/
+- Deno permissions:
+  https://docs.deno.com/runtime/manual/getting_started/permissions
+- Deno test/check/fmt/lint/task references:
+  https://docs.deno.com/runtime/reference/cli/
 
 ## Deno Version Source
 
@@ -34,30 +49,30 @@ PR #69 introduced this project pin:
 deno = "2"
 ```
 
-Prefer `mise install` / `mise exec -- deno ...` when `deno` is not already on
-PATH or when validating against the project-pinned Deno 2 toolchain.
+Prefer `mise install` / `mise x --command "deno ..."` when `deno` is not already
+on PATH or when validating against the project-pinned Deno 2 toolchain.
 
 ## Command Table
 
-| Phase | Purpose | Command |
-|---|---|---|
-| Install | Check CLI | `slack version` |
-| Install | Install pinned Deno | `mise trust`, `mise install` |
-| Install | Check Deno | `deno --version` or `mise exec -- deno --version` |
-| Install | Windows install | `irm https://downloads.slack-edge.com/slack-cli/install-windows.ps1 | iex` |
-| Auth | Login/list auth | `slack login`, `slack auth list` |
-| Local | Run app | `slack run` |
-| Local | Create local trigger | `slack trigger create --trigger-def triggers/example_trigger.ts` |
-| Local | Validate manifest | `slack manifest validate` |
-| Test | Format/lint/check/test | `deno fmt --check`, `deno lint`, `deno task check`, `deno task test` |
-| Deploy | Set env | `slack env set KEY value`, `slack env list` |
-| Deploy | Deploy app | `slack deploy` or `slack deploy --team T...` |
-| Deploy | Create deployed trigger | `slack trigger create --trigger-def triggers/example_trigger.ts` and select deployed app |
-| Operate | Tail activity | `slack activity --tail --level info` |
-| Operate | Trigger management | `slack trigger list/info/update/delete/access` |
-| Operate | Datastore management | `slack datastore query/get/put/update/delete` |
-| Operate | Function access | `slack function access --name callback_id --everyone` |
-| Docs | Search current docs | `slack docs search "query" --output=json --limit=5` |
+| Phase   | Purpose                 | Command                                                                                  |
+| ------- | ----------------------- | ---------------------------------------------------------------------------------------- |
+| Install | Check CLI               | `slack version`                                                                          |
+| Install | Install pinned Deno     | `mise trust`, `mise install`                                                             |
+| Install | Check Deno              | `deno --version` or `mise x --command "deno --version"`                                  |
+| Install | Windows install         | `irm https://downloads.slack-edge.com/slack-cli/install-windows.ps1 \| iex`              |
+| Auth    | Login/list auth         | `slack login`, `slack auth list`                                                         |
+| Local   | Run app                 | `slack run`                                                                              |
+| Local   | Create local trigger    | `slack trigger create --trigger-def triggers/example_trigger.ts`                         |
+| Local   | Validate manifest       | `slack manifest validate`                                                                |
+| Test    | Format/lint/check/test  | `deno fmt --check`, `deno lint`, `deno task check`, `deno task test`                     |
+| Deploy  | Set env                 | `slack env set KEY value`, `slack env list`                                              |
+| Deploy  | Deploy app              | `slack deploy` or `slack deploy --team T...`                                             |
+| Deploy  | Create deployed trigger | `slack trigger create --trigger-def triggers/example_trigger.ts` and select deployed app |
+| Operate | Tail activity           | `slack activity --tail --level info`                                                     |
+| Operate | Trigger management      | `slack trigger list/info/update/delete/access`                                           |
+| Operate | Datastore management    | `slack datastore query/get/put/update/delete`                                            |
+| Operate | Function access         | `slack function access --name callback_id --everyone`                                    |
+| Docs    | Search current docs     | `slack docs search "query" --output=json --limit=5`                                      |
 
 ## Windows Notes
 
@@ -98,11 +113,11 @@ deno task i18n:check
 If `deno` is missing from PATH, use the mise-managed Deno 2 toolchain:
 
 ```bash
-mise exec -- deno fmt --check
-mise exec -- deno lint
-mise exec -- deno task check
-mise exec -- deno task test
-mise exec -- deno task i18n:check
+mise x --command "deno fmt --check"
+mise x --command "deno lint"
+mise x --command "deno task check"
+mise x --command "deno task test"
+mise x --command "deno task i18n:check"
 ```
 
 For read-only Slack CLI validation, run only when Slack CLI and auth are

@@ -6,25 +6,32 @@ Events API.
 
 ## Official Sources
 
-- Using triggers: https://docs.slack.dev/tools/deno-slack-sdk/guides/using-triggers
-- Creating link triggers: https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-link-triggers/
-- Creating scheduled triggers: https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-scheduled-triggers/
-- Creating event triggers: https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-event-triggers/
-- Creating webhook triggers: https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-webhook-triggers/
-- Managing triggers: https://docs.slack.dev/tools/deno-slack-sdk/guides/managing-triggers/
+- Using triggers:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/using-triggers
+- Creating link triggers:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-link-triggers/
+- Creating scheduled triggers:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-scheduled-triggers/
+- Creating event triggers:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-event-triggers/
+- Creating webhook triggers:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/creating-webhook-triggers/
+- Managing triggers:
+  https://docs.slack.dev/tools/deno-slack-sdk/guides/managing-triggers/
 - Events API: https://docs.slack.dev/apis/events-api/
 - Events catalog: https://docs.slack.dev/reference/events/
-- Verifying requests from Slack: https://docs.slack.dev/authentication/verifying-requests-from-slack/
+- Verifying requests from Slack:
+  https://docs.slack.dev/authentication/verifying-requests-from-slack/
 - Rate limits: https://docs.slack.dev/apis/web-api/rate-limits/
 
 ## Trigger Selection
 
-| Trigger | Use when | Watch for |
-|---|---|---|
-| Link / shortcut | A Slack user explicitly starts a workflow from Slack | Best for forms, approvals, and end-user external auth |
-| Scheduled | Time or interval starts the workflow | Once/hourly/daily/weekly/monthly/yearly schedules; timezone clarity |
-| Event | Supported Slack event starts the workflow | Not every Events API event is supported; app must be in relevant channels |
-| Webhook | External system posts a flat JSON payload to Slack | Nested JSON can fail validation; protect the URL |
+| Trigger         | Use when                                             | Watch for                                                                 |
+| --------------- | ---------------------------------------------------- | ------------------------------------------------------------------------- |
+| Link / shortcut | A Slack user explicitly starts a workflow from Slack | Best for forms, approvals, and end-user external auth                     |
+| Scheduled       | Time or interval starts the workflow                 | Once/hourly/daily/weekly/monthly/yearly schedules; timezone clarity       |
+| Event           | Supported Slack event starts the workflow            | Not every Events API event is supported; app must be in relevant channels |
+| Webhook         | External system posts a flat JSON payload to Slack   | Nested JSON can fail validation; protect the URL                          |
 
 Local triggers and deployed triggers are separate. Recreate triggers after
 `slack deploy`; do not expect a `slack run` trigger to work against a deployed
@@ -32,28 +39,28 @@ app.
 
 ## Workflow Event Trigger Basics
 
-| Item | Guidance |
-|---|---|
-| Type | `TriggerTypes.Event` |
-| Event enum | Use `TriggerEventTypes.*`, not raw Events API names, when available |
-| Inputs | Use `TriggerContextData.Event.<EventName>.*` |
-| Channel targeting | Use `channel_ids` or `all_resources: true` for channel-based events |
-| Enterprise targeting | Workspace-based event triggers can require `team_ids` |
-| Filter | Use `AND`, `OR`, `NOT`; there is no `!=`; nesting has limits; no short-circuit |
-| Membership | App must be a member of channels where channel events are observed |
+| Item                 | Guidance                                                                       |
+| -------------------- | ------------------------------------------------------------------------------ |
+| Type                 | `TriggerTypes.Event`                                                           |
+| Event enum           | Use `TriggerEventTypes.*`, not raw Events API names, when available            |
+| Inputs               | Use `TriggerContextData.Event.<EventName>.*`                                   |
+| Channel targeting    | Use `channel_ids` or `all_resources: true` for channel-based events            |
+| Enterprise targeting | Workspace-based event triggers can require `team_ids`                          |
+| Filter               | Use `AND`, `OR`, `NOT`; there is no `!=`; nesting has limits; no short-circuit |
+| Membership           | App must be a member of channels where channel events are observed             |
 
 ## Common Workflow Event Types
 
-| Category | Trigger enum | Data/event name | Typical fields | Scopes |
-|---|---|---|---|---|
-| App mention | `AppMentioned` | `app_mentioned` | `channel_id`, `message_ts`, `text`, `user_id` | `app_mentions:read` |
-| Message | `MessagePosted` | `message_posted` | `channel_id`, `channel_type`, `message_ts`, `thread_ts`, `text`, `user_id` | `channels:history`, `groups:history`; Deno docs have also mentioned `im:read`, `mpim:read` |
-| Metadata | `MessageMetadataPosted` | `message_metadata_posted` | metadata type/payload, channel, timestamp | `metadata.message:read` |
-| Reaction | `ReactionAdded`, `ReactionRemoved` | `reaction_added/removed` | `reaction`, `user_id`, `item_user`, `channel_id`, `message_ts` | `reactions:read` |
-| Channel membership | `UserJoinedChannel`, `UserLeftChannel` | `user_joined_channel/user_left_channel` | `user_id`, `channel_id`, `inviter_id`, `channel_type` | `channels:read`, `groups:read` |
-| Channel lifecycle | `ChannelCreated`, `ChannelDeleted`, `ChannelRenamed`, `ChannelArchived`, `ChannelUnarchived` | `channel_*` | `channel_id`, `channel_name`, creator/user IDs | `channels:read` |
-| Slack Connect | `ChannelShared`, `ChannelUnshared`, invite events | shared channel/invite data | channel/team/invite data | `channels:read`, `groups:read`, and `conversations.connect:read` or `conversations.connect:manage` depending on the event/action |
-| Other | `DndUpdated`, `EmojiChanged`, `PinAdded`, `PinRemoved`, `UserJoinedTeam` | event-specific | event-specific | `dnd:read`, `emoji:read`, `pins:read`, `users:read` |
+| Category           | Trigger enum                                                                                 | Data/event name                         | Typical fields                                                             | Scopes                                                                                                                           |
+| ------------------ | -------------------------------------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| App mention        | `AppMentioned`                                                                               | `app_mentioned`                         | `channel_id`, `message_ts`, `text`, `user_id`                              | `app_mentions:read`                                                                                                              |
+| Message            | `MessagePosted`                                                                              | `message_posted`                        | `channel_id`, `channel_type`, `message_ts`, `thread_ts`, `text`, `user_id` | `channels:history`, `groups:history`; Deno docs have also mentioned `im:read`, `mpim:read`                                       |
+| Metadata           | `MessageMetadataPosted`                                                                      | `message_metadata_posted`               | metadata type/payload, channel, timestamp                                  | `metadata.message:read`                                                                                                          |
+| Reaction           | `ReactionAdded`, `ReactionRemoved`                                                           | `reaction_added/removed`                | `reaction`, `user_id`, `item_user`, `channel_id`, `message_ts`             | `reactions:read`                                                                                                                 |
+| Channel membership | `UserJoinedChannel`, `UserLeftChannel`                                                       | `user_joined_channel/user_left_channel` | `user_id`, `channel_id`, `inviter_id`, `channel_type`                      | `channels:read`, `groups:read`                                                                                                   |
+| Channel lifecycle  | `ChannelCreated`, `ChannelDeleted`, `ChannelRenamed`, `ChannelArchived`, `ChannelUnarchived` | `channel_*`                             | `channel_id`, `channel_name`, creator/user IDs                             | `channels:read`                                                                                                                  |
+| Slack Connect      | `ChannelShared`, `ChannelUnshared`, invite events                                            | shared channel/invite data              | channel/team/invite data                                                   | `channels:read`, `groups:read`, and `conversations.connect:read` or `conversations.connect:manage` depending on the event/action |
+| Other              | `DndUpdated`, `EmojiChanged`, `PinAdded`, `PinRemoved`, `UserJoinedTeam`                     | event-specific                          | event-specific                                                             | `dnd:read`, `emoji:read`, `pins:read`, `users:read`                                                                              |
 
 Events API catalog names may differ from workflow trigger data names. Example:
 Events API uses `app_mention`; Deno workflow trigger data may use

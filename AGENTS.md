@@ -104,7 +104,8 @@ mcp_Context7_get - library - docs({
 
 ### Slack Platform Deno Development
 
-Slack Deno SDKを使った開発・修正・調査では、まずプロジェクト専用スキルを参照してください。
+Slack Deno
+SDKを使った開発・修正・調査では、まずプロジェクト専用スキルを参照してください。
 
 **使用するスキル:**
 
@@ -115,15 +116,21 @@ Slack Deno SDKを使った開発・修正・調査では、まずプロジェク
 - Slack Functions、Workflows、Triggers、Manifestを追加・修正したい
 - Event Trigger、Events API、Webhook、Scheduled Trigger、Link Triggerを扱いたい
 - Slack Web API、OAuth scopes、rate limit、pagination、エラー処理を設計したい
-- Block Kit、Modal、OpenForm、interactive components、slash command相当の導線を扱いたい
-- Datastore、Slack native functions、connector functions、external authを検討したい
+- Block Kit、Modal、OpenForm、interactive components、slash
+  command相当の導線を扱いたい
+- Datastore、Slack native functions、connector functions、external
+  authを検討したい
 - Slack CLI v4、Deno v2、local run、deploy、activity logs、CI設定を確認したい
 
 **注意:**
 
-- Slack PlatformやSlack CLIの仕様は変わりやすいため、スキル内の参照に従い、実装直前に公式Slack docsを確認する
-- Events APIの全イベントがWorkflow Event Triggerで使えるとは限らないため、TriggerEventTypesと公式docsで確認する
-- Slack Web APIのレスポンスは必ず`ok`と必要フィールドを確認し、scope/rate limit/paginationを明示的に扱う
+- Slack PlatformやSlack
+  CLIの仕様は変わりやすいため、スキル内の参照に従い、実装直前に公式Slack
+  docsを確認する
+- Events APIの全イベントがWorkflow Event
+  Triggerで使えるとは限らないため、TriggerEventTypesと公式docsで確認する
+- Slack Web APIのレスポンスは必ず`ok`と必要フィールドを確認し、scope/rate
+  limit/paginationを明示的に扱う
 - ユーザー向けメッセージ、エラー、ログ、Block Kit fallback textは必ずi18n化する
 
 ### Slack Connector Functions

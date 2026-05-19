@@ -49,20 +49,20 @@ This skill is project-scoped. It assumes the repo structure in `slack-utils`:
    - `triggers/*.ts` for trigger typing and `TriggerContextData`.
    - `lib/validation/schemas.ts`, `lib/i18n/mod.ts`, and `locales/*.json` for
      Zod/i18n rules.
-3. Verify current Slack docs for the exact primitive before implementing.
-   Slack docs change often; do not rely only on memory for scopes, method
-   limits, trigger syntax, connector availability, or CLI command flags.
+3. Verify current Slack docs for the exact primitive before implementing. Slack
+   docs change often; do not rely only on memory for scopes, method limits,
+   trigger syntax, connector availability, or CLI command flags.
 4. Read only the reference files needed for the task:
    - `references/architecture.md` for SDK, manifest, workflow, function, and
      datastore design.
    - `references/triggers-events.md` for link/scheduled/event/webhook triggers
      and Events API boundaries.
-   - `references/block-kit-interactivity.md` for Block Kit, `OpenForm`,
-     modals, view handlers, and interactive messages.
+   - `references/block-kit-interactivity.md` for Block Kit, `OpenForm`, modals,
+     view handlers, and interactive messages.
    - `references/web-api-scopes.md` for Web API methods, scopes, pagination,
      rate limits, token visibility, and error handling.
-   - `references/native-connectors-external-auth.md` for Slack native
-     functions, connector functions, and external OAuth decisions.
+   - `references/native-connectors-external-auth.md` for Slack native functions,
+     connector functions, and external OAuth decisions.
    - `references/cli-deno-ci.md` for Slack CLI v4, Deno v2, local/deploy,
      testing, hooks, and CI.
 5. Implement in the repo's established style:
@@ -73,12 +73,13 @@ This skill is project-scoped. It assumes the repo structure in `slack-utils`:
    - Triggers live in `triggers/` and use `Trigger<typeof Workflow.definition>`.
    - Public functions get JSDoc.
    - User-facing strings, errors, logs, Slack text, and fallback text use i18n.
-   - Inputs and external data are validated with Zod schemas from `lib/validation`.
+   - Inputs and external data are validated with Zod schemas from
+     `lib/validation`.
 6. Validate proportionally:
    - Run `deno fmt --check`, `deno lint`, `deno task check`, `deno task test`,
      and `deno task i18n:check` when code changes are made. If Deno is managed
      by mise or is not on PATH, run the same commands through the repository's
-     `.mise.toml` toolchain, for example `mise exec -- deno task test`.
+     `.mise.toml` toolchain, for example `mise x --command "deno task test"`.
    - For read-only Slack CLI validation, prefer `slack manifest validate` when
      the CLI is installed and credentials exist.
    - Run stateful Slack CLI commands such as `slack run`,
@@ -89,8 +90,8 @@ This skill is project-scoped. It assumes the repo structure in `slack-utils`:
 ## Hard Rules
 
 - Do not hardcode user-facing Slack text, error text, or log text in new code.
-- Do not add inputs, environment values, trigger payload fields, or external
-  API responses without validation.
+- Do not add inputs, environment values, trigger payload fields, or external API
+  responses without validation.
 - Do not call Slack Web API data before checking `response.ok` and required
   response fields.
 - Do not assume local triggers work for deployed apps; local and deployed
