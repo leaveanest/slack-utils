@@ -39,7 +39,7 @@ Always check `ok` and required fields before reading response data.
 | Method | Scopes | Use | Pitfalls |
 |---|---|---|---|
 | `chat.postMessage` | `chat:write`; maybe `chat:write.public`, `chat:write.customize` | Post messages, DMs, thread replies | Roughly 1 message/sec/channel; include fallback `text`; channel visibility matters |
-| `chat.update` | `chat:write` | Update own messages | Use channel ID, not user ID for DMs; consider `hash`/state races |
+| `chat.update` | `chat:write` | Update own messages | Use channel ID, not user ID for DMs; handle interactive message races with app-side state/idempotency. `hash` applies to `views.update`, not `chat.update` |
 | `chat.delete` | `chat:write` | Delete own messages | Bot tokens generally delete bot-authored messages only |
 | `conversations.info` | `channels:read`, `groups:read`, `im:read`, `mpim:read` | Channel/DM metadata | Add `include_num_members: true` when `num_members` is needed |
 | `conversations.history` | `channels:history`, `groups:history`, `im:history`, `mpim:history` | Message history | Cursor pagination; strict newer limits for some non-Marketplace apps |
@@ -51,7 +51,7 @@ Always check `ok` and required fields before reading response data.
 | `users.info`, `users.list` | `users:read`; maybe `users:read.email` | User lookup/directory | Pagination; deleted/deactivated users can appear |
 | `usergroups.*` | `usergroups:read`, `usergroups:write` | Usergroup management | Paid-plan/team constraints |
 | `reactions.*` | `reactions:read`, `reactions:write` | Add/get/list/remove reactions | `already_reacted` can be business-success |
-| `files.*` | `files:read`, `files:write`, `remote_files:*` | File operations | `files.upload` is deprecated; use external upload flow |
+| `files.*` | `files:read`, `files:write`; remote file methods use `remote_files:read`, `remote_files:share`, or `remote_files:write` depending on method | File operations | `files.upload` is deprecated; use external upload flow |
 | `views.*` | Often no OAuth scopes in method docs | Modals/App Home views | `trigger_id` is short-lived; use `hash` for update races; verify App Home support |
 | `pins.*` | `pins:read`, `pins:write` | Pin management | Message needs channel + timestamp |
 | `bookmarks.*` | `bookmarks:read`, `bookmarks:write` | Channel bookmarks | Workflow featured operations can share scopes |
@@ -100,15 +100,9 @@ what a token can see or mutate.
    `message_not_found`, and `user_not_found` as business errors.
 7. Log warnings from `response_metadata.warnings`.
 
-## Current Repo Fix To Remember
+## Optional Response Fields
 
-`functions/example_function/mod.ts` reads `channel.num_members` after
-`conversations.info`. Slack only returns member count when requested, so the API
-call should include:
-
-```ts
-const response = await client.conversations.info({
-  channel: channelId,
-  include_num_members: true,
-});
-```
+Some Web API methods omit expensive or optional fields unless explicitly
+requested. For example, `conversations.info` requires an explicit option when a
+function needs member counts. Check the method reference before assuming a field
+is present.

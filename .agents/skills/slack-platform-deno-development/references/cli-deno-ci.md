@@ -34,7 +34,7 @@ validation, hooks, and CI updates.
 | Local | Run app | `slack run` |
 | Local | Create local trigger | `slack trigger create --trigger-def triggers/example_trigger.ts` |
 | Local | Validate manifest | `slack manifest validate` |
-| Test | Format/lint/check/test | `deno fmt --check`, `deno lint`, `deno task check`, `deno test --allow-env --allow-read --allow-net` |
+| Test | Format/lint/check/test | `deno fmt --check`, `deno lint`, `deno task check`, `deno task test` |
 | Deploy | Set env | `slack env set KEY value`, `slack env list` |
 | Deploy | Deploy app | `slack deploy` or `slack deploy --team T...` |
 | Deploy | Create deployed trigger | `slack trigger create --trigger-def triggers/example_trigger.ts` and select deployed app |
@@ -74,17 +74,31 @@ After code changes, run as much of the following as the environment allows:
 deno fmt --check
 deno lint
 deno task check
-deno test --allow-env --allow-read --allow-net
+deno task test
 deno task i18n:check
 ```
 
-If Slack CLI and auth are available, additionally run:
+For read-only Slack CLI validation, run only when Slack CLI and auth are
+available:
 
 ```bash
 slack manifest validate
+```
+
+## Manual Operational Smoke Tests
+
+Run stateful Slack operations only when the user explicitly asks for them and
+the target workspace/app has been confirmed:
+
+```bash
 slack run
 slack trigger create --trigger-def triggers/<trigger>.ts
+slack deploy
 slack activity --tail --level info
 ```
+
+`slack trigger create`, `slack deploy`, datastore writes, access changes, and
+similar commands mutate Slack-side state. Do not run them as ordinary PR
+validation.
 
 Do not claim Slack CLI validation succeeded unless the command was actually run.

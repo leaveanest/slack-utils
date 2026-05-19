@@ -77,8 +77,7 @@ functions, workflows, and datastores.
 
 - `manifest.ts` already registers `ExampleWorkflow` and
   `ExampleFunctionDefinition`.
-- `functions/example_function/mod.ts` follows the basic custom function pattern,
-  but `conversations.info` should include `include_num_members: true` when
-  `num_members` is required.
+- When using `conversations.info`, request optional fields explicitly when the
+  method docs require it, such as member counts.
 - This repo's rules require JSDoc for public functions, Zod validation, i18n,
   and colocated tests.

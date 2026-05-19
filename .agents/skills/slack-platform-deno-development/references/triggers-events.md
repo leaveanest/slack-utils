@@ -52,7 +52,7 @@ app.
 | Reaction | `ReactionAdded`, `ReactionRemoved` | `reaction_added/removed` | `reaction`, `user_id`, `item_user`, `channel_id`, `message_ts` | `reactions:read` |
 | Channel membership | `UserJoinedChannel`, `UserLeftChannel` | `user_joined_channel/user_left_channel` | `user_id`, `channel_id`, `inviter_id`, `channel_type` | `channels:read`, `groups:read` |
 | Channel lifecycle | `ChannelCreated`, `ChannelDeleted`, `ChannelRenamed`, `ChannelArchived`, `ChannelUnarchived` | `channel_*` | `channel_id`, `channel_name`, creator/user IDs | `channels:read` |
-| Slack Connect | `ChannelShared`, `ChannelUnshared`, invite events | shared channel/invite data | channel/team/invite data | `channels:read`, `groups:read`, `conversations.connect:*` |
+| Slack Connect | `ChannelShared`, `ChannelUnshared`, invite events | shared channel/invite data | channel/team/invite data | `channels:read`, `groups:read`, and `conversations.connect:read` or `conversations.connect:manage` depending on the event/action |
 | Other | `DndUpdated`, `EmojiChanged`, `PinAdded`, `PinRemoved`, `UserJoinedTeam` | event-specific | event-specific | `dnd:read`, `emoji:read`, `pins:read`, `users:read` |
 
 Events API catalog names may differ from workflow trigger data names. Example:
@@ -84,8 +84,12 @@ Slack-managed and do not require repo-owned signature verification.
 3. Add the smallest required scopes to `manifest.ts`.
 4. Add narrow filters for `message_posted`; avoid `all_resources: true` unless
    the behavior and cost are intended.
-5. Prevent self-trigger loops with filters such as `NOT {{data.user_id}} == ...`
-   or by checking bot/user IDs in the function.
+5. Prevent self-trigger loops with filters that exclude the app/bot user. In
+   trigger filter syntax, express negation as a `NOT` operator block with one
+   child statement, not as inline `NOT {{...}}` text:
+   `{ operator: "NOT", inputs: [{ statement: "{{data.user_id}} == U..." }] }`.
+   Also keep a defensive bot/user ID check in the function when side effects
+   matter.
 6. After scope changes, expect reinstall/reauthorization.
 
 ## Event Trigger Skeleton

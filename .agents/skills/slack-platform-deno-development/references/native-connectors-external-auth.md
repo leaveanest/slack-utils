@@ -35,22 +35,13 @@ functions, custom functions, and external OAuth/API code.
 | Canvas | `canvas_create`, `canvas_copy`, `canvas_update_content`, `channel_canvas_create`, `share_canvas` | Canvas operations, when available |
 | Utility | `add_bookmark`, `add_pin`, `delay` | Workflow utility steps |
 
-## Connector Service Categories
+## Connector Boundary
 
-| Service group | Representative operations |
-|---|---|
-| Google Workspace | Sheets row add/select/update/delete, Calendar events, Gmail send, Meet start |
-| Microsoft | Excel row operations, OneDrive file copy/create, Outlook email/calendar, Teams meetings |
-| Git/issues | GitHub/GitLab/Jira/Linear issue creation and updates |
-| CRM/support/ITSM | Salesforce records/flows, Zendesk tickets, ServiceNow incidents |
-| Incident/ops | PagerDuty incidents/status/escalation, FireHydrant, Rootly, LaunchDarkly, Snyk |
-| Project/task | Asana, ClickUp, Monday, Basecamp, Workast, Wrike tasks/projects |
-| Docs/files/knowledge | Notion pages, Dropbox, Box, Guru, Miro, Smartsheet |
-| HR/contracts/signature | Greenhouse, Lever, Deel, DocuSign, Adobe Sign, Dropbox Sign |
-| Messaging/marketing/forms | Twilio/RingCentral/Dialpad SMS, Mailchimp, SurveyMonkey, Typeform, Zoom |
-
-Also read the repo-local `slack-connector-functions` skill for external SaaS
-work. It has the dedicated connector adoption checklist and catalog summary.
+Do not maintain a connector catalog copy in this general Slack Platform skill.
+For any external SaaS operation, first load the repo-local
+`slack-connector-functions` skill and use its adoption checklist and catalog
+references. Return to this file only for workflow composition, manifest scopes,
+external auth fallback, trigger pairing, or security constraints.
 
 ## External Auth Checklist
 

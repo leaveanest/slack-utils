@@ -1,6 +1,6 @@
 ---
 name: slack-platform-deno-development
-description: Use when building, modifying, debugging, reviewing, or documenting Slack Platform apps in this repository with Deno Slack SDK v2, including custom functions, workflows, link/scheduled/event/webhook triggers, manifest scopes, datastores, Slack Web API calls, Block Kit messages/modals/interactivity, Slack native functions, connector functions, external auth, Slack CLI local/deploy operations, Deno tests, or CI.
+description: Use when designing, implementing, or debugging Slack Platform primitives in this repository with Deno Slack SDK v2, including custom functions, workflows, link/scheduled/event/webhook triggers, manifest scopes, datastores, Slack Web API calls, Block Kit messages/modals/interactivity, Slack native functions, external auth, or Slack CLI behavior directly tied to a Slack app change.
 ---
 
 # Slack Platform Deno Development
@@ -15,6 +15,20 @@ rules, and validate with Deno/Slack CLI checks.
 This skill is project-scoped. It assumes the repo structure in `slack-utils`:
 `manifest.ts`, `functions/`, `workflows/`, `triggers/`, `lib/`, `locales/`,
 `docs/`, `deno.jsonc`, `import_map.json`, and `slack.json`.
+
+## When Not To Use
+
+- For pure code review of a diff or PR, use the review workflow/skill first and
+  load this skill only for Slack-specific facts.
+- For external SaaS connector adoption, use `slack-connector-functions` as the
+  primary skill; return here only for workflow, manifest, trigger, or external
+  auth integration details.
+- For generic Deno, CI, formatting, release, or GitHub Actions work unrelated to
+  Slack Platform behavior, follow the repo's normal development workflow.
+- For Slack workspace mutations such as deploys, trigger creation, trigger
+  access changes, datastore writes, or function access changes, proceed only
+  when the user explicitly asks for that operation and the target workspace/app
+  is clear.
 
 ## Workflow
 
@@ -60,11 +74,14 @@ This skill is project-scoped. It assumes the repo structure in `slack-utils`:
    - User-facing strings, errors, logs, Slack text, and fallback text use i18n.
    - Inputs and external data are validated with Zod schemas from `lib/validation`.
 6. Validate proportionally:
-   - Run `deno fmt --check`, `deno lint`, `deno task check`, `deno test`, and
+   - Run `deno fmt --check`, `deno lint`, `deno task check`, `deno task test`, and
      `deno task i18n:check` when code changes are made.
-   - For Slack CLI behavior, prefer `slack manifest validate`, `slack run`,
-     `slack trigger create --trigger-def ...`, `slack deploy`, and
-     `slack activity --tail` when the CLI is installed and credentials exist.
+   - For read-only Slack CLI validation, prefer `slack manifest validate` when
+     the CLI is installed and credentials exist.
+   - Run stateful Slack CLI commands such as `slack run`,
+     `slack trigger create --trigger-def ...`, `slack deploy`, or
+     `slack activity --tail` only after explicit user request and target
+     workspace/app confirmation.
 
 ## Hard Rules
 
