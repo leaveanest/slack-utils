@@ -33,7 +33,7 @@ Install these for normal development:
 
 - Git, including Git Bash on Windows.
 - mise for Deno runtime management.
-- Deno runtime through the repository `.mise.toml`.
+- Deno 2.x runtime through the repository `.mise.toml`.
 - Slack CLI.
 
 Install these when useful:
@@ -71,7 +71,7 @@ Install these when useful:
   Windows; that package is the Slack desktop app.
 - The Slack CLI installer configures the `slack` command, but Deno must be
   installed separately. Prefer `mise install` from the repository root so mise
-  reads `.mise.toml`.
+  reads `.mise.toml` and installs the repository's Deno 2.x toolchain.
 - Verify installation with `slack version` before running `slack login`.
 - Re-check Slack's official install docs before changing install commands,
   because Slack CLI releases and installer behavior can change.

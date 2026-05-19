@@ -6,7 +6,7 @@ Use Homebrew for system tools and mise for Deno version management.
 
 1. Homebrew.
 2. Required system tools: Git, mise, Slack CLI.
-3. Deno through the repository `.mise.toml`.
+3. Deno 2.x through the repository `.mise.toml`.
 4. Optional tools: Node.js, GitHub CLI, VS Code.
 5. Slack authentication.
 6. Repository setup and validation.
@@ -59,17 +59,19 @@ Set up the repository:
 
 ```bash
 cp .env.example .env
-slack env add local
 bash scripts/setup-git-hooks.sh
 deno task cursor-ci
 ```
+
+Edit `.env` after copying it. `slack.json` is already configured to load `.env`
+for the local environment when Slack CLI runs the app.
 
 ## Notes
 
 - Prefer `brew install --cask slack-cli` when Homebrew is available.
 - If Homebrew is not available, use Slack's official Mac/Linux installer for
   Slack CLI and install mise separately.
-- Prefer mise over `brew install deno` so the project can pin Deno versions
+- Prefer mise over `brew install deno` so the project can align on Deno 2.x
   consistently across macOS and Windows.
 - `mise trust` is expected on first checkout because mise asks users to trust
   project config files before applying them.

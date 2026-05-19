@@ -11,12 +11,13 @@ Slack desktop app.
 2. Install Git for Windows so Git Bash is available for repo hooks.
 3. Install PowerShell 7 for Slack's Windows installer.
 4. Install mise.
-5. Install Deno through the repository `.mise.toml`.
-6. Open a new PowerShell 7 terminal.
-7. Install Slack CLI with Slack's official Windows installer.
-8. Install optional tools if needed.
-9. Authenticate Slack.
-10. Set up and validate the repository.
+5. Configure mise activation or shims for PowerShell.
+6. Install Deno 2.x through the repository `.mise.toml`.
+7. Open a new PowerShell 7 terminal.
+8. Install Slack CLI with Slack's official Windows installer.
+9. Install optional tools if needed.
+10. Authenticate Slack.
+11. Set up and validate the repository.
 
 ## Commands
 
@@ -37,15 +38,31 @@ winget install --id Microsoft.PowerShell --exact
 winget install --id jdx.mise --exact
 ```
 
+Configure mise for PowerShell. Prefer activation for interactive shells:
+
+```powershell
+if (!(Test-Path $PROFILE)) { New-Item -ItemType File -Path $PROFILE -Force }
+Add-Content $PROFILE 'mise activate pwsh | Out-String | Invoke-Expression'
+```
+
+If profile changes are not allowed, add mise shims to the user PATH instead:
+
+```powershell
+[Environment]::SetEnvironmentVariable(
+  "Path",
+  [Environment]::GetEnvironmentVariable("Path", "User") + ";$env:LOCALAPPDATA\mise\shims",
+  "User"
+)
+```
+
+Open a new PowerShell 7 terminal so PATH and mise activation changes are loaded.
+
 Install Deno with mise:
 
 ```powershell
 mise trust
 mise install
 ```
-
-Open a new PowerShell 7 terminal so PATH changes are loaded before running
-Slack's installer.
 
 Install Slack CLI with Slack's official Windows installer:
 
@@ -85,10 +102,12 @@ Set up the repository:
 
 ```powershell
 Copy-Item .env.example .env
-slack env add local
 bash scripts/setup-git-hooks.sh
 deno task cursor-ci
 ```
+
+Edit `.env` after copying it. `slack.json` is already configured to load `.env`
+for the local environment when Slack CLI runs the app.
 
 ## Troubleshooting
 
