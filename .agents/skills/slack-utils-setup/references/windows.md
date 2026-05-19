@@ -1,20 +1,22 @@
 # Windows Setup
 
-Use winget for dependency tools, then use Slack's official PowerShell installer
-for Slack CLI. Do not install `SlackTechnologies.Slack` as a substitute for
-Slack CLI; that package is the Slack desktop app.
+Use winget for dependency tools, mise for Deno version management, then use
+Slack's official PowerShell installer for Slack CLI. Do not install
+`SlackTechnologies.Slack` as a substitute for Slack CLI; that package is the
+Slack desktop app.
 
 ## Install Order
 
 1. Confirm winget is available.
 2. Install Git for Windows so Git Bash is available for repo hooks.
 3. Install PowerShell 7 for Slack's Windows installer.
-4. Install Deno.
-5. Open a new PowerShell 7 terminal.
-6. Install Slack CLI with Slack's official Windows installer.
-7. Install optional tools if needed.
-8. Authenticate Slack.
-9. Set up and validate the repository.
+4. Install mise.
+5. Install Deno through the repository `.mise.toml`.
+6. Open a new PowerShell 7 terminal.
+7. Install Slack CLI with Slack's official Windows installer.
+8. Install optional tools if needed.
+9. Authenticate Slack.
+10. Set up and validate the repository.
 
 ## Commands
 
@@ -32,7 +34,14 @@ Install required dependency tools with winget:
 ```powershell
 winget install --id Git.Git --exact
 winget install --id Microsoft.PowerShell --exact
-winget install --id DenoLand.Deno --exact
+winget install --id jdx.mise --exact
+```
+
+Install Deno with mise:
+
+```powershell
+mise trust
+mise install
 ```
 
 Open a new PowerShell 7 terminal so PATH changes are loaded before running
@@ -61,6 +70,7 @@ Verify commands:
 
 ```powershell
 git --version
+mise --version
 deno --version
 slack version
 ```
@@ -84,6 +94,12 @@ deno task cursor-ci
 
 - If `slack` is not found after installation, open a new PowerShell 7 terminal
   and verify PATH.
+- If `deno` is not found after `mise install`, verify mise activation or shims
+  in the current shell.
+- `mise trust` is expected on first checkout because mise asks users to trust
+  project config files before applying them.
+- Run `mise use deno@2` only when intentionally changing or initializing the
+  repository Deno pin.
 - Run the Slack CLI installer from PowerShell, not Git Bash.
 - If the installer reports a restricted language mode, check
   `$ExecutionContext.SessionState.LanguageMode` and follow Slack's guidance for

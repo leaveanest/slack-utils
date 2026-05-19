@@ -6,23 +6,24 @@ description: "Use when setting up or troubleshooting a local development environ
 # Slack Utils Setup
 
 Guide local development environment setup for this Slack Deno SDK repository.
-Prefer package managers for repeatable installs, but use Slack's official
-installer for Slack CLI on Windows.
+Use package managers for system tools, use mise for Deno version management, and
+use Slack's official installer for Slack CLI on Windows.
 
 ## Scope
 
 Use this skill for:
 
 - New machine setup for this repository.
-- macOS setup with Homebrew.
-- Windows setup with winget for dependencies and Slack's official installer for
-  Slack CLI.
+- macOS setup with Homebrew and mise-managed Deno.
+- Windows setup with winget for dependency tools, mise-managed Deno, and Slack's
+  official installer for Slack CLI.
 - Setup verification, `slack login`, `.env`, Git hooks, and repo health checks.
 
 Do not use this skill for:
 
 - Implementing Slack functions, workflows, triggers, or connector steps.
-- Publishing releases unless the user is specifically setting up release tooling.
+- Publishing releases unless the user is specifically setting up release
+  tooling.
 - Creating package-manager manifests such as `package.json`; this is a Deno
   repository.
 
@@ -30,8 +31,9 @@ Do not use this skill for:
 
 Install these for normal development:
 
-- Deno runtime.
 - Git, including Git Bash on Windows.
+- mise for Deno runtime management.
+- Deno runtime through the repository `.mise.toml`.
 - Slack CLI.
 
 Install these when useful:
@@ -50,15 +52,15 @@ Install these when useful:
 3. Present the install order before commands when the user is preparing a new
    machine.
 4. Keep required tools separate from optional tools.
-5. Verify `git`, `deno`, and `slack` after installation.
+5. Verify `git`, `mise`, `deno`, and `slack` after installation.
 6. Run Slack authentication and repository setup only after the tools are
    installed.
 
 ## OS References
 
-- Use `references/macos.md` for Homebrew-based setup.
-- Use `references/windows.md` for winget dependency setup and Slack's official
-  Windows installer.
+- Use `references/macos.md` for Homebrew + mise setup.
+- Use `references/windows.md` for winget dependency setup, mise-managed Deno,
+  and Slack's official Windows installer.
 
 ## Slack CLI Notes
 
@@ -67,8 +69,9 @@ Install these when useful:
   PowerShell for installation on Windows.
 - Do not install `SlackTechnologies.Slack` as a substitute for Slack CLI on
   Windows; that package is the Slack desktop app.
-- The Slack CLI installer configures the `slack` command, but runtime tools such
-  as Deno must be installed separately for Deno Slack SDK projects.
+- The Slack CLI installer configures the `slack` command, but Deno must be
+  installed separately. Prefer `mise install` from the repository root so mise
+  reads `.mise.toml`.
 - Verify installation with `slack version` before running `slack login`.
 - Re-check Slack's official install docs before changing install commands,
   because Slack CLI releases and installer behavior can change.
@@ -93,15 +96,17 @@ deno task cursor-ci
 
 ## Troubleshooting
 
-- If `slack` is not found after installation, open a new terminal and verify PATH.
+- If `slack` is not found after installation, open a new terminal and verify
+  PATH.
 - On Windows, run the Slack CLI installer from PowerShell, not Git Bash.
 - On Windows, if the installer reports a restricted language mode, check
   `$ExecutionContext.SessionState.LanguageMode` and follow Slack's guidance for
   `FullLanguage`.
 - If Git hooks fail on Windows, ensure Git for Windows is installed and `bash`
   is available on PATH.
-- If Deno imports fail, run `deno cache manifest.ts workflows/example_workflow.ts`
-  or rerun the repo checks to refresh dependencies.
+- If Deno imports fail, run
+  `deno cache manifest.ts workflows/example_workflow.ts` or rerun the repo
+  checks to refresh dependencies.
 
 ## Output Expectations
 
