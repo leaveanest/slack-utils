@@ -102,6 +102,23 @@ mcp_Context7_get - library - docs({
 - Slack Functions、Workflows、Triggersをサポート
 - 最新のSlack Platform featuresに対応
 
+### 開発環境セットアップ
+
+macOS/Windows
+のローカル開発環境をセットアップ、確認、トラブルシュートする場合は、OS
+別の導入順とコマンドをまとめた専用スキルを参照してください。
+
+**使用するスキル:**
+
+- `.agents/skills/slack-utils-setup/SKILL.md`
+
+**確認するシーン:**
+
+- 新しい端末で slack-utils の開発環境を作る
+- macOS で Homebrew と mise を使って Deno/Slack CLI を準備する
+- Windows で winget、mise、Slack 公式 installer を使ってセットアップする
+- `git`、`deno`、`slack`、Git hooks、`deno task cursor-ci` の検証手順を確認する
+
 ### Slack Platform Deno Development
 
 Slack Deno
