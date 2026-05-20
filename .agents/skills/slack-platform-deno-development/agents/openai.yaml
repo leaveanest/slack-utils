@@ -1,0 +1,4 @@
+interface:
+  display_name: "Slack Platform Deno Development"
+  short_description: "Build and maintain Slack Deno SDK apps"
+  default_prompt: "Use this skill when implementing Slack Deno SDK functions, workflows, triggers, Block Kit interactions, Web API calls, datastores, connector/native functions, or Slack CLI deploy workflows in this repository."
