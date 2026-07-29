@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.4](https://github.com/leaveanest/slack-utils/compare/v1.9.3...v1.9.4) (2026-05-20)
+
+
+### Bug Fixes
+
+* Skip Claude PR Review for fork PRs ([fd6c63a](https://github.com/leaveanest/slack-utils/commit/fd6c63abc5d973abd566e68d65289df39f81f72f))
+
 ## [1.9.3](https://github.com/leaveanest/slack-utils/compare/v1.9.2...v1.9.3) (2026-04-10)
 
 
